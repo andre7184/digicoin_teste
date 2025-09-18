@@ -1,0 +1,48 @@
+{% extends 'base.html'%}
+{% load static%}
+{%block content%}
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{%static 'css/index.css'%}">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="telaBranca">
+        <div class="parteinferior">
+        <div class="logoDigix">
+            <img class="logo" src="{%static 'img/digixlogo.png'%}" alt="">
+        </div>
+            <form action="" method="POST" id='loginForm'>
+                <div class="inputs">
+                    {% csrf_token %}
+                    <h3 class="textoTelaBranca">Email</h3>
+                    <input id="email"  class="inputTelaBranca" type="name">
+    
+                    <h3  class="textoTelaBranca">Senha</h3>
+                    <input id="senha"  class="inputTelaBranca" type="password">
+    
+                </div>
+                <button type="submit"  class="botaoTelaBranca">ENTRAR</button>
+            </form>
+            
+
+            <div class="linhaInferior">
+               
+                <a class="linkInferior2" href="#2"> Esqueci Minha Senha</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+<script src="{%static 'js/index.js'%}"></script>
+
+{%endblock%}

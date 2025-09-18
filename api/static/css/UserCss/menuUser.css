@@ -1,0 +1,284 @@
+
+
+.group{
+    display: none;
+}
+
+.imgGroup:hover{
+    cursor: pointer;
+}
+
+.imgLogo{
+    height: 80px;
+    width: 150px;
+}
+
+.imgPerfil{
+    height: 50px;
+    width: 50px;
+}
+
+.imgPerfil:hover{
+    cursor: pointer;
+}
+
+.navbar a{
+    text-decoration: none;
+    color: black;
+    font-size: 18px;
+}
+
+.navbar a:hover{
+    color: rgba(252, 103, 29, 1);
+}
+
+.usuario p{
+    font-size: 20px;
+    margin: 0;
+}
+
+.digicoin{
+    color: rgba(252, 103, 29, 1);
+}
+
+.valor{
+    color: rgba(11, 192, 211, 1);
+}
+
+.menu{
+   
+    box-shadow: rgba(0, 0, 0, 0.09) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+    display: flex;
+    height: 100px;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 10vw;
+    padding-left: 10vw;
+}
+
+
+.navbar{
+    display: flex;
+    align-items: center;
+    gap: 100px;
+
+}
+
+.perfil{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.imgFlecha:hover{
+    cursor: pointer;
+}
+
+.imgFlechaCima{
+    display: none;
+}
+
+.imgFlechaCima:hover{
+    cursor: pointer;
+}
+
+.flechaDropdownContainer {
+    position: relative;
+    display: flex;
+    align-items: center; /* mantém só o necessário para as flechas e o menu */
+}
+
+.notificacoes-menuUser{
+    position: absolute;
+    top: 100%; /* colado logo abaixo da flecha */
+    left: 0; /* alinha com a flecha */
+    background-color: white;
+    border: 2px solid rgba(44, 0, 106, 1);
+    border-radius: 5px;
+    display: none;
+    flex-direction: column;
+    z-index: 1000;
+    width: 250px; 
+  
+}
+
+.notificacao{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.notificacao h2{
+    margin: 0;
+    font-size: 20px;
+    color: #FC671D;
+}
+
+.notificacao p{
+    margin: 0;
+    font-size: 18px;
+    
+}
+
+.notificacaoOn{
+    display: none;
+    
+}
+
+.dropdownMenu {
+    position: absolute;
+    top: 100%; /* colado logo abaixo da flecha */
+    left: 0; /* alinha com a flecha */
+    background-color: white;
+    border: 2px solid rgba(44, 0, 106, 1);
+    border-radius: 5px;
+    display: none;
+    flex-direction: column;
+    z-index: 1000;
+    width: 200px;
+
+}
+
+.dropdownMenu button{
+    display: flex;
+    background-color: white;
+    height: 50px;
+    align-items: center;
+    gap: 5px;
+    padding: 10px;
+}
+
+.dropdownMenu button:hover{
+    background-color: rgb(236, 234, 234);
+    transition: 0.5s ease-in-out;
+    cursor: pointer;
+}
+
+.visualizarPerfil, .historicoCompra{
+    border: none;
+    border-bottom: 2px solid rgba(44, 0, 106, 1);
+}
+
+.sair{
+    border: none;
+}
+
+.imgSino{
+    padding: 10px;
+    
+} 
+
+.perfilUsuario{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.botaoSairPerfilUsuario:hover{
+    cursor: pointer;
+}
+
+
+
+.botaoSairPerfilUsuario{
+    border: none;
+    background-color: white;
+}
+
+.menu-lateral-menuUser{
+    display: none;
+}
+
+.menuMobile-menuUser{
+    display: none;
+}
+
+.flechaEsquerda{
+    display: none;
+}
+
+.dropdownMenuMobile-menuUser{
+    display: none;
+}
+
+@media (max-width: 1000px) {
+    .navbar{
+        display: none;
+    }
+    .usuario{
+        display: none;
+    }
+    .imgSino{
+        display: none;
+    } 
+    .imgFlecha{
+        display: none;
+    }
+    .imgFlechaCima{
+        display: none;
+    }
+
+    .group{  
+      display: block;
+      
+    }
+
+    .menuMobile-menuUser{
+        
+        flex-direction: column;
+        margin-top: 100px;
+        width: 235px;
+        top: 0;
+        position: absolute;
+        z-index: 9999;
+        background-color: white;
+        align-items: center;
+        gap: 15px;
+        border-radius: 0 0 5px 0 ;
+        padding-bottom: 15px;
+    }
+    
+    .menuMobile-menuUser a {
+        padding: 12px 20px;
+        text-decoration: none;
+        font-size: 18px;
+        
+    }
+
+    .dropdownMenuMobile-menuUser{
+        
+        flex-direction: column;
+        width: 235px;
+        top: 0;
+        position: absolute;
+        margin-top: 100px;
+        right: 0;
+        border-radius: 0 0 0 5px;
+        z-index: 9999;
+        background-color: white;
+        align-items: center;
+        padding-bottom: 15px;
+    }
+    .dropdownMenuMobile-menuUser button{
+        background-color: white;
+        border: none;
+        display: flex;
+        font-size: 18px;
+        align-items: center;
+        gap: 5px;
+         
+    };
+    .dropdownMenuMobile-menuUser img{
+        width: 28px;
+        height: 28px;
+    }
+    
+    
+  }

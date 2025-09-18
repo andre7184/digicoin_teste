@@ -1,0 +1,239 @@
+{% load static%}
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static "css/AdmCss/popUpEstoque.css" %}">
+</head>
+<body>
+    <!-- Primeiro Popup: Formulário de Adição de Produto -->
+    <dialog id="popupEditarProduto">
+        <header class="headerCentral">
+            <div class="headerLogo">
+                <img src="{% static "img/logoAdmin.png" %}" alt="LOGO">
+            </div>
+            <div class="headerBotao">
+                <button type="button" class="buttonClose">    
+                    <img  alt="botãoClose" src="{% static "img/iconeX.png" %}">
+                </button>
+            </div>
+        </header>
+        <div class="ModalContainer">
+            <form id="produtoForm">
+            <div class="ladoEsquerdo">
+                <div class="FormProduto">
+                    <label for="Produto">Nome do Produto:</label>
+                    <input type="text" id="Produto" placeholder="Produto" class="alertaInput" maxlength="55">
+                    <small class="alerta">Mensagem de erro</small>
+                </div>
+                <div class="FormDescricao">
+                    <label for="Descricao">Descrição:</label>
+                    <input type="text" id="Descricao" placeholder="Descrição do produto"
+                        maxlength="250" class="alertaInput">
+                    <small class="alerta">Mensagem de erro</small>
+                </div>
+                <div class="FormQuantidade">
+                    <label for="Quantidade">Quantidade:</label>
+                    <input type="text" id="Quantidade" placeholder="Quantidade" 
+                        oninput="mascaraMilhar(this)" 
+                        onkeydown="return bloqueiaCaracteresIndesejados(event)" 
+                        maxlength="9" class="alertaInput">
+                    <small class="alerta">Mensagem de erro</small>
+                </div>
+                <div class="FormPreco">
+                    <label for="Preco">Preço:</label>
+                    <input type="text" id="Preco" placeholder="999" 
+                        oninput="mascaraMilhar(this)" 
+                        onkeydown="return bloqueiaCaracteresIndesejados(event)"  
+                        maxlength="15" class="alertaInput" >
+                    <small class="alerta">Mensagem de erro</small>
+                </div>
+                <div class="FormTipo">
+                    <div><label>Tipo:</label></div>
+                    <div class="FormCheckbox">
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="Campanha">
+                            <label for="Campanha">Campanha</label>
+                            <small class="alerta">*</small> 
+                        </div>
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="Fisico">
+                            <label for="Fisico">Físico</label>
+                            <small class="alerta" id="erroFisico">*</small>
+                        </div>
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="Virtual">
+                            <label for="Virtual">Virtual</label>
+                            <small class="alerta" id="erroVirtual">*</small>
+                        </div> 
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="ladoDireito">
+                <div class="FormImagem">
+                    <label>Faça o upload da imagem do produto:</label>
+                    <label for="imagem" class="UploadBox">
+                        <div class="default-content">
+                            <img src="{% static "img/uploadIcon.png" %}" alt="uploadIcon" class="upload-icon">
+                            <hr>
+                            <small>Arraste e solte o arquivo de imagem aqui</small>
+                            <small>para realizar upload</small>
+                            <hr>
+                            <small>JPEG - PNG - WEBP</small>
+                        </div>
+                    </label>
+                    <input type="file" id="imagem" accept="image/jpeg, image/png, image/webp">
+                    
+                    
+                    
+                    <footer class="produtoFormBotao">
+
+                        <div class="produtoDivFormBotao">
+                            <!-- Botão Concluir redireciona para o segundo pop up -->
+                            <button id="btnConcluir" type="button" class="buttonConcluir">Concluido</button>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+            </form>
+        </div>
+    </dialog>
+
+    <!-- Segundo Popup: continuação do conteudo do primeiro pop up-->
+    <dialog id="popupConcluir">
+        <header class="headerCentral">
+            <div class="headerLogo">
+                <img src="{% static "img/logoAdmin.png" %}"  alt="LOGO">
+            </div>
+            <div class="headerBotao">
+                <button type="button" class="buttonClose2"> 
+                    <!-- Botão para fechar o segundo popup -->   
+                    <img src="{% static "img/iconeX.png" %}" alt="botãoClose">
+                </button>
+            </div>
+        </header>
+        <div class="ModalContainer">
+            <div class="produto2Corpo">
+            <form id="produtoForm2">
+                <div class="temaCampanhaHeard">
+                    <div class="imagemTemanhaCampanha">
+                        <img src="{% static "img/relogio.png" %}" alt="relogio">
+                    </div>
+                    <div><p>Selecione uma campanha ou crie uma: </p></div>
+                </div>
+
+                <div class="temaCampanhaCorpo">
+                    
+                    {% for evento in eventos %}
+                    <div>
+                        <input type="checkbox" value="{{evento.id}}" class="listaCampanha" id="{{evento.id}}">
+                        <label for="{{evento.id}}">{{evento.nome}}</label>
+                    </div>
+                    {% endfor %}
+                    
+                
+                </div>
+            </div>
+            <footer class="rodaPe">
+                    <div class="criarCampanha">
+                        <div>
+                            <a href="#CriacaoDeCampanha" class="CriarNovaCampanha">Criar nova campanha</a>
+        
+                        </div>
+        
+                    </div>
+                    <div class="rodaPeBotao">
+                        <div>
+                        <input type="hidden" value="" id="valorEditar">
+                        <input type="hidden" value="" id="valorEditar2">
+                        <div/>
+                        
+                        <div>
+                        <button type="submit" class="buttonrodaPe">
+                            Concluido
+                        </button>
+                        <div/>
+                    </div>
+
+                </footer>
+            </form>            
+        </div>
+    </dialog> 
+
+    <dialog id="CriacaoDeCampanha" >
+        <header class="headerCentral">
+            <div class="headerLogo">
+                <img src="{% static "img/logoAdmin.png" %}"  alt="LOGO">
+            </div>
+            <div class="headerBotao">
+                <button type="button" class="buttonClose3"> 
+                    <img src="{% static "img/iconeX.png" %}" alt="botãoClose">
+                </button>
+            </div>
+        </header>
+        <div class="ModalContainerModal">
+            <form id="CriacaoDeCampanhaForm" >
+                <div class="cadastroEvento">
+                    <div class="miniContainer">
+                        <div class="cadastroEventoTema">
+                            <label for="nomeCampanha">Nome da Campanha</label>
+                            <input type="text" id="nomeCampanha" placeholder="Nome da Campanha" class="alertaInput" maxlength="55">
+                            <small class="alerta">Mensagem de erro</small>
+                        </div>
+
+                    {% comment %} <div class="cadastroEventoDescricao">
+                        <label for="descricaoCampanha">Descrição (Opcional)</label>
+                        <textarea id="descricaoCampanha" cols="30" rows="10" placeholder="Digite aqui..."></textarea>
+                    </div> {% endcomment %}
+                
+                        <div class="fim">
+                            <label for="dataFim">Data Encerramento</label>
+                            <input type="date" id="dataFim" class="alertaInput">
+                            <small class="alerta">Mensagem de erro</small>
+                        </div>
+
+                        <div class="statusCampanha">
+                            <label for="ativaCampanha">Status da Campanha</label>
+                            
+                            <div class="toggleSwitch">
+                                <input type="checkbox" id="ativaCampanha" name="ativaCampanha" checked hidden>
+
+                                <div class="statusButtons">
+                                <label for="ativaCampanha" class="btnStatus ativo">Ativo</label>
+                                <label for="ativaCampanha" class="btnStatus inativo">Desativo</label>
+                                </div>
+                            </div>
+                            </div>
+                    </div>
+    
+                    {% comment %} <div class="campanhaData"> {% endcomment %}
+                        {% comment %} <div class="inicio">
+                            <label for="dataInicio">Início</label>
+                            <input type="date" id="dataInicio">
+                        </div> {% endcomment %}
+                        
+                        {% comment %} <div class="fim">
+                            <label for="dataFim">Fim</label>
+                            <input type="date" id="dataFim">
+                        </div> {% endcomment %}
+                    {% comment %} </div> {% endcomment %}
+    
+                    <footer class="rodaPeModal">
+                        <div>
+                            <button type="submit" class="buttonrodaPeModal">Concluido</button>
+                        </div>
+                    </footer>
+                </div>
+            </form>
+        </div>
+    </dialog>
+    
+    <script src="{% static 'js/AdmJS/popUpEstoque.js' %}"></script>
+    
+</body>

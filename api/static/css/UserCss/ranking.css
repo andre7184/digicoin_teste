@@ -1,0 +1,156 @@
+:root {
+  --laranja: #FC671D;
+  --magenta: #D34AF4;
+  --cinza: #faf6f7;
+  --cinza-escuro:#888;
+  --ciano: #0BC0D3;
+  --base: #2c006a;
+  --branco: #fff;
+  --preto: #000;
+  --sombra-base:rgba(44, 0, 106, 0.4);
+  --sombra-preta:rgba(0, 0, 0, 0.4);
+}
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--branco);
+    margin: 0;
+    padding: 0;
+    color: var(--preto);
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+  }
+
+.container-ranking{
+  display: flex;
+  flex-direction: column;
+  width: 600px;
+  justify-content: center;
+  gap: 30px;
+  margin: 5rem auto;
+  
+}
+  
+.title-ranking{
+  display: flex;
+  flex-direction: column;
+}
+
+.title-ranking__ranking{
+  color: var(--preto);
+  font-family: K2D;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-align: start;
+}
+
+.title-ranking__line{
+  background-color: var(--laranja);
+  width: 40px;
+  height: 2px;
+}
+
+.ranking{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+.ranking__list{
+  display: flex;
+  gap: 50px;
+  flex-direction: row;
+  padding: 15px 60px;
+  border-radius: 10px;
+  background: var(--branco);
+  box-shadow: 5px 5px 10px 0px rgba(77, 44, 135, 0.45);
+  align-items: center;
+}
+
+.ranking > .ranking__list:first-child{
+  padding: 25px 60px;
+}
+
+.usuario__dados{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.usuario__classificacao{
+  color: #2C006A;
+  font-family: K2D;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.ranking > .ranking__list:first-child .usuario__classificacao {
+  font-size: 40px;
+}
+
+.usuario__dados-nome{
+  color: #000;
+  text-align: center;
+  font-family: K2D;
+  font-size: 25px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.ranking > .ranking__list:first-child .usuario__dados .usuario__dados-nome{
+  font-size: 30px;
+}
+
+.usuario__dados-saldo{
+  color: #0BC0D3;
+  font-family: K2D;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.dg{
+  color: #FC671D;
+  font-family: K2D;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.ranking > .ranking__list:first-child .usuario__dados .usuario__dados-saldo, 
+.ranking__list:first-child .usuario__dados .usuario__dados-saldo .dg{
+  font-size: 20px;
+}
+
+@media (max-width: 650px) {
+  .container-ranking{
+    width: 90%;
+
+  }
+  .usuario__dados {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: start;
+    width: 100%;
+    
+  }
+  .usuario__dados-nome{
+    margin-bottom: 1px;
+  }
+}

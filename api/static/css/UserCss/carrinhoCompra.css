@@ -1,0 +1,331 @@
+:root {
+  --laranja: #FC671D;
+  --magenta: #D34AF4;
+  --cinza: #faf6f7;
+  --cinza-escuro: #888;
+  --ciano: #0BC0D3;
+  --base: #2c006a;
+  --branco: #fff;
+  --preto: #000;
+  --sombra-base: rgba(44, 0, 106, 0.4);
+  --sombra-preta: rgba(0, 0, 0, 0.4);
+  --cinza-escuro-rgb: rgba(136, 136, 136);
+  --cinza-rgb: rgba(250, 246, 247);
+  --preto-rgb: rgba(0, 0, 0);
+}
+
+.body-carrinhoCompras {
+  margin: 0;
+  padding: 0;
+  color: var(--preto);
+  align-items: center;
+  font-size: 20px;
+}
+
+.containerPrincipal-carrinhoCompras {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.containerSecundaria-carrinhoCompras {
+  margin-top: 100px;
+  margin-left: 20px;
+  margin-right: 20px;
+  width: 100%;
+  max-width: 800px;
+  box-sizing: border-box;
+}
+
+.titulo-carrinhoCompras__line{
+  background-color: var(--laranja);
+  width: 40px;
+  height: 2px;
+}
+
+.titulo-carrinhoCompras {
+  display: flex;
+  flex-direction: row;
+  font-weight: bold;
+  font-size: 25px;
+}
+
+.sortDesc-carrinhoCompras {
+  transform: none;
+  cursor: pointer;
+}
+
+.sortAsc-carrinhoCompras {
+  transform: scale(1, -1);
+  cursor: pointer;
+}
+
+.iconeSort-carrinhoCompras {
+  width: 15px;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.icone-carrinhoCompras {
+  width: 20px;
+  border-bottom: 2px solid var(--laranja);
+}
+
+.icone-carrinhoCompras img {
+  width: 100%;
+}
+
+.itemGridHeader-carrinhoCompras {
+ display: flex;
+ font-weight: bold;
+ padding: 10px;
+ border-radius: 10px;
+ margin-top: 10px;
+}
+
+.itensGrid-carrinhoCompras {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+/* .itemGridCell-carrinhoCompras.col-produto {
+  min-width: 300px;
+} */
+
+.itemGridCell-carrinhoCompras img {
+  width: 18px;
+  margin-right: 5px;
+  vertical-align: middle;
+  margin-bottom: 1px;
+}
+
+.itemGridRow-carrinhoCompras {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  margin-right: 5px;
+  border-radius: 10px;
+  border-left: 6px solid var(--ciano);
+  box-shadow: 0 1px 3px var(--sombra-base);
+}
+
+.itemGridCell-carrinhoCompras {
+  text-align: center;
+  flex: 1;
+  padding: 5px;
+}
+
+.itemGridCell-carrinhoCompras.itens {
+  min-width: 300px;
+}
+
+.botao-remover-carrinhoCompras {
+  border: none;
+  background-color: transparent;
+}
+
+.botao-remover-carrinhoCompras img {
+  width: 18px;
+  cursor: pointer;
+}
+
+.botao-remover-carrinhoCompras img:hover {
+  filter: hue-rotate(-90deg);
+}
+
+.botao-remover-carrinhoCompras img:active {
+  transform: translate(-2px, 2px);
+}
+
+.cor-moeda-carrinhoCompras {
+  color: var(--laranja);
+}
+
+.cor-valor-carrinhoCompras {
+  color: var(--ciano);
+}
+
+.valorTotal-carrinhoCompras {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.checkoutButton-carrinhoCompras {
+  border: 1px solid var(--magenta);
+  background-color: var(--magenta);
+  color: var(--branco);
+  padding: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 18px;
+  margin-top: 15px;
+}
+
+.checkoutButton-carrinhoCompras:hover {
+  background-color: var(--branco);
+  color: var(--preto);
+}
+
+.checkoutButton-carrinhoCompras:disabled {
+  border: 1px solid var(--preto);
+  background-color: var(--cinza);
+  color: var(--cinza-escuro);
+  cursor: not-allowed;
+}
+
+@media screen and (max-width: 600px) {
+  
+  .itemGridHeader-carrinhoCompras {
+    display: none;
+  }
+
+  .containerSecundaria-carrinhoCompras {
+    min-width: 300px;
+  }
+
+  .itemGridRow-carrinhoCompras {
+    display: block;
+    margin-bottom: 1em;
+  }
+
+  .itemGridCell-carrinhoCompras {
+    border: none;
+    position: relative;
+    padding-left: 30%;
+    text-align: left;
+  }
+
+  .itemGridCell-carrinhoCompras:before {
+    content: attr(data-label);
+    position: absolute;
+    top: 50%;
+    left: 6px;
+    width: 30%;
+    padding-right: 5px;
+    white-space: nowrap;
+    transform: translateY(-50%);
+    font-weight: bold;
+  }
+}
+
+.form-carrinhoCompras {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+}
+
+.input-label-carrinhoCompras {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+    margin-bottom: 5px;
+    width: 100%;
+    text-align: start;
+}
+
+.form-group-carrinhoCompras {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.form-local-tipo-carrinhoCompras {
+    margin-top: 20px;
+    margin-left: 25px;
+}
+
+.form-group-carrinhoCompras .input-container-carrinhoCompras {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 250px; 
+}
+
+.input-container-carrinhoCompras label {
+    display: flex;
+    align-items: center; /* Centraliza verticalmente */
+    margin-bottom: 5px;
+    gap: 8px; /* Espaço entre o radio e o texto */
+}
+
+.input-radio-carrinhoCompras {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--magenta);
+    border-radius: 0; /* Quadrado */
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.input-radio-carrinhoCompras:checked {
+    background-color: var(--laranja); /* Fundo laranja quando selecionado */
+}
+
+.form-endereco-ativo-carrinhoCompras input, 
+.form-endereco-ativo-carrinhoCompras select {
+    cursor: text;
+}
+.form-endereco-desativado-carrinhoCompras input, 
+.form-endereco-desativado-carrinhoCompras select {
+    background-color: var(--cinza); /* Fundo cinza escuro com transparencia */
+    cursor: not-allowed;
+}
+.obs-carrinhoCompras {
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.asterisco-carrinhoCompras {
+    color: var(--laranja);
+}
+.input-text-carrinhoCompras {
+    padding: 10px;
+    border: 1px solid var(--magenta);
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+.input-select-carrinhoCompras {
+    padding: 10px;
+    border: 1px solid var(--magenta);
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+.input-button-carrinhoCompras {
+    width: 200px;
+    padding: 10px;
+    border: none;
+    border: 1px solid var(--magenta);
+    background-color: var(--magenta);
+    color: var(--branco);
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+}
+.input-button-carrinhoCompras:hover {
+    background-color: var(--branco);
+    color: var(--preto);
+}
+
+.input-label-carrinhoCompras1{
+  width: 100%;
+  text-align: start;
+}
+
+.campo-invalido-carrinhoCompras {
+    border: 2px solid red;
+}

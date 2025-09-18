@@ -1,0 +1,114 @@
+
+.containerMaior{
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box; 
+}
+
+.container {
+    box-sizing: border-box;
+    max-width: auto;
+    min-width: 500px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* .perfil {
+    margin-bottom: 10px;
+} */
+
+.perfil i {
+    font-size: 50px;
+    color: #5a2d82;
+}
+
+.cartoes {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.cartao {
+    background: #2e0052;
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    width: 300px;
+    min-height: 150px;
+    /* max-height: 150px; */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.cartao h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+}
+
+.saldo {
+    font-size: 24px;
+    color: orange;
+}
+
+.lista-pagamentos {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.lista-pagamentos p {
+    /* margin: 5px 0; */
+    text-align: left;
+    /* color: #00e5ff; */
+}
+
+/* .lista-pagamentos span {
+    color: orange;
+} */
+
+.lista-pagamentos i{
+    color: #00e5ff;
+}
+
+.cartao span{
+    color: #00e5ff;
+}
+
+#dgs{
+    color: orange;
+}
+
+#valor{
+    color: #00e5ff;
+}
+
+.perfilUsuario{
+    border-radius: 0;
+    /* border: 2px solid rgba(0, 0, 0, 0.5); */
+}
+
+#nomeUsuarioPopUp {
+    word-wrap: break-word; /* Quebra palavras longas, se necessário */
+    word-break: break-word; /* Suporte adicional */
+    overflow-wrap: break-word; /* Padrão moderno */
+    white-space: normal; /* Permite quebra de linha normal */
+}
+.perfil #nomeUsuarioPopUp {
+    max-width: 100%; /* Garante que não ultrapasse a div pai */
+}
+
+
+@media (max-width: 530px) {
+    .container {
+        max-width: 350px;
+        min-width: 350px;
+    }
+}

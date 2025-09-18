@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/AdmCss/listaDePedidos.css'%}">
+<link rel="stylesheet" href="{% static 'css/AdmCss/paginacao.css'%}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+{% include 'components/adm/menuAdm.html' %}
+
+<div class="principal-listaDePedidos">
+    <div class="detalhe-listaDePedidos">
+        <div class="cabecalho-listaDePedidos">
+            <h1 class="Titulo-listaDePedidos">
+                <p class="underline-listaDePedidos">Ped</p> <p>idos</p>
+            </h1>
+
+            <div class="butoes-listaDePedidos">
+                <div class="button-listaDePedidos">
+                    <a href="/listaDePedidos">
+                        <button class="buttonPedidos-listaDePedidos">Visualizar Pedidos</button>
+                    </a>
+                </div>
+                
+                <div class="button-listaDePedidos">
+                    <a href="/listaDePedidos?status=1">
+                        <button class="buttonPedidos1-listaDePedidos">Visualizar Pedidos Concluídos</button>
+                    </a>
+                </div>
+                
+                <div class="button-listaDePedidos">
+                    <a href="/listaDePedidos?status=2">
+                        <button class="buttonPedidos2-listaDePedidos">Visualizar Pedidos Pendentes</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="Produto-listaDePedidos">
+            {% csrf_token %}
+            {% for compra in compras %}
+            <div class="linha-listaDePedidos" onclick="toggleItens('{{ compra.id }}')" style="cursor: pointer;">
+                <div class="nome-listaDePedidos">
+                    <img class="iconedigix-listaDePedidos" src="{% static 'img/digixlogo.png'%}" alt="icone">
+                    <p>{{ compra.idUsuario.first_name }} - {{ compra.pedido }}</p>
+                </div>
+                <img class="caminhao-listaDePedidos" src="{% static 'img/truck.png'%}" alt="icone">
+            </div>
+            
+            
+            <div id="itens-{{ compra.id }}" class="itensCompra-listaDePedidos" style="display: none;">
+                <strong>Itens da Compra:</strong>
+                <div class='descricaoItensCompra-listaDePedidos'>
+                    {% for item in pedidos %}
+                        {% if item.idCompra.id == compra.id %}
+                            <div class='infoItensCompra-listaDePedidos'>
+                                {{ item.qtdProduto }} un. {{ item.idProduto.nome }} 
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                
+                <strong class="btn-itens-compra">Tipo: <span>{{ compra.entrega }}</span>
+
+                
+                {% if compra.pedido == 'Pendente' %}
+                    {% if compra.entrega == 'Retirar' or compra.obsEntrega != 'False' %}
+                        <button id="botaoConcluir">Concluir Pedido</button>
+                        {% if compra.entrega == 'Entrega'   %}
+                        <p class="endereco">{{ compra.rua }}, {{compra.numero}} - {{ compra.bairro }}, {{compra.cidade}} - {{compra.estado}}, {{compra.cep}} </p>
+                        {% endif %}
+                    {% elif compra.entrega == 'Entrega' and compra.obsEntrega == 'False' %}
+   
+                        <input type="text" class="obsEntrega" placeholder="Observação*">
+                        <button id="botaoConcluir">Enviar Produto</button>
+                        {% if compra.entrega == 'Entrega'   %}
+                        <p class="endereco">{{ compra.rua }}, {{compra.numero}} - {{ compra.bairro }}, {{compra.cidade}} - {{compra.estado}}, {{compra.cep}} </p>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                {% if compra.entrega == 'Entrega'   %}
+                <p class="endereco">- {{ compra.rua }}, {{compra.numero}} - {{ compra.bairro }}, {{compra.cidade}} - {{compra.estado}}, {{compra.cep}} </p>
+                {% endif %}
+                {% endif %}
+
+                
+                </strong>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% comment %} <div class="paginacao-div">
+            <div class="paginacao-paginas">
+                <div>
+                    {% if compras.has_previous %}
+                        <a class="botao-desativado-paginacao" href="?compra_page={{ compras.previous_page_number }}">
+                            <i class="fa fa-arrow-left" aria-hidden="true"></i> 
+                        </a>
+                    {% else %}
+                        <span class="botao-desativado-paginacao desativado">
+                            <i class="fa fa-arrow-left" aria-hidden="true"></i> 
+                        </span>
+                    {% endif %}
+                </div>
+        
+                <span>Página {{ compras.number }} de {{ compras.paginator.num_pages }}</span>
+        
+                <div>
+                    {% if compras.has_next %}
+                        <a class="botao-desativado-paginacao" href="?compra_page={{ compras.next_page_number }}">
+                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                        </a>
+                    {% else %}
+                        <span class="botao-desativado-paginacao desativado">
+                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                        </span>
+                    {% endif %}
+                </div>
+            </div> {% endcomment %}
+
+            <div class="pagination">
+                {% if compras.has_previous %}
+                <div class="paginas">
+                    <a class="anterior" href="?compra_page={{ compras.previous_page_number }}&search={{ request.GET.search }}">
+                        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                    </a>
+                </div>
+                {% endif %}
+                
+                <span>Página {{ compras.number }} de {{ compras.paginator.num_pages }}</span>
+                
+                {% if compras.has_next %}
+                <div class="paginas">
+                    <a class="proxima" href="?compra_page={{ compras.next_page_number }}&search={{ request.GET.search }}">
+                         <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        
+        </div>
+        
+    </div>  
+</div>
+
+<script src="{% static 'js/AdmJs/listaDePedidos.js' %}"></script>
+
+{% endblock content %}

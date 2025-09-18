@@ -1,0 +1,199 @@
+
+:root {
+    --laranja: #FC671D;
+    --magenta: #D34AF4;/* cor do botão */
+    --cinza: #faf6f7;
+    --cinza-escuro:#888;
+    --ciano: #0BC0D3;
+    --base: #2c006a;
+    --branco: #fff;
+    --preto: #000;
+    --roxo: #4D2C87;  /* fundo roxo */
+    --sombra-base:rgba(44, 0, 106, 0.4);
+    --sombra-preta:rgba(0, 0, 0, 0.4);
+    --cinzaPlaceHolder:#9E9E9E;
+    --cinzaDatas: #D9D9D9;
+  }
+
+
+.body-cadastrarUsuario{
+    background: var(--roxo);
+    margin: 0px 100px;
+   
+}
+
+.header-cadastrarUsuario{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      margin-left: 20px;
+      margin-right: 20px;
+      margin-bottom: 50px;
+  }
+
+.botao{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.iconeX-cadastrarUsuario{
+    
+    width: 32px;
+    height: 32px;
+}
+
+.iconeX-cadastrarUsuario:hover{
+    cursor: pointer;
+}
+
+.button-cadastrarUsuario{
+    
+    font-size: 22px;
+    border-radius: 20px;
+    cursor: pointer;
+    border: none;
+    color: var(--branco);
+    background-color: var(--magenta);
+    width: 260px;
+    height: 60px;
+    margin-right: 25px;
+    margin-bottom: 20px;
+    
+}
+
+
+.input-cadastrarUsuario{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    
+}
+
+.input-cadastrarUsuario input{
+
+    border-radius: 4px;
+    border: none;
+    width: 800px;
+    height: 55px;   
+    background-color: var(--branco);
+    font-size: 20px;
+    color: var(--base);
+    margin-bottom: 40px;
+
+}
+
+
+
+.input-cadastrarUsuario label{
+    color: var(--branco);
+    font-size: 15px;
+    margin-bottom: 15px;
+}
+
+.input-cadastrarUsuario input:read-write
+{
+
+    color: var(--base);
+    padding-left: 20px;
+
+}
+
+.formUsuario-cadastrarUsuario{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+}
+
+
+/* Adicione isso ao final do cadastrarUsuario.css */
+
+@media (max-width: 1200px){
+    .input-cadastrarUsuario input {
+        max-width: 600px;
+    }
+}
+@media (max-width: 900px)  {
+    .input-cadastrarUsuario input {
+        max-width: 400px;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .body-cadastrarUsuario {
+        margin: 0 30px !important;
+        padding: 20px;
+    }
+
+    .header-cadastrarUsuario {
+        margin: 15px 0 30px 0;
+    }
+
+    .input-cadastrarUsuario input {
+        max-width: 300px;
+        height: 50px;
+        font-size: 18px;
+    }
+
+    .button-cadastrarUsuario {
+        width: 220px;
+        height: 55px;
+        font-size: 20px;
+    }
+
+    .iconeX-cadastrarUsuario {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .body-cadastrarUsuario {
+        margin: 0 15px !important;
+        padding: 15px;
+    }
+
+    .input-cadastrarUsuario input {
+        max-width: 200px;
+        height: 45px;
+        font-size: 16px;
+        margin-bottom: 30px;
+    }
+
+    .input-cadastrarUsuario label {
+        font-size: 14px;
+    }
+
+    .button-cadastrarUsuario {
+        width: 100%;
+        max-width: 280px;
+        height: 50px;
+        font-size: 18px;
+        margin-right: 0;
+    }
+
+    .header-cadastrarUsuario img:first-child {
+        width: 150px;
+    }
+
+    .iconeX-cadastrarUsuario {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+@media (max-width: 360px) {
+    .input-cadastrarUsuario input {
+        height: 42px;
+        font-size: 15px;
+    }
+
+    .button-cadastrarUsuario {
+        height: 45px;
+        font-size: 16px;
+    }
+}

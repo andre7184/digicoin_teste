@@ -1,0 +1,288 @@
+:root {
+    --laranja: #FC671D;
+    --magenta: #D34AF4;
+    --cinza: #faf6f7;
+    --cinza-escuro: #888;
+    --ciano: #0BC0D3;
+    --base: #2c006a;
+    --branco: #fff;
+    --preto: #000;
+    --sombra-base: rgba(44, 0, 106, 0.4);
+    --sombra-preta: rgba(0, 0, 0, 0.4);
+}
+
+.menucentro-listaEstoque{
+    display: flex;
+    justify-content: center;
+}
+
+.principal-listaEstoque{
+    margin-left: 300px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+}
+
+.imagemsort{
+    height: 15px;
+}
+
+.perfil {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    padding-right: 75px;
+}
+
+.icone-perfil {
+    margin-right: 15px;
+}
+
+.barra-pesquisa-listaEstoque{
+    display: flex;
+    justify-content: end;
+
+}
+.estoque-container-listaEstoque {
+    padding: 10px;
+    margin-top: 40px; 
+    border-radius: 10px;
+    width: 60%;
+}
+
+.cabecalho-listaEstoque {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 10px 0px 10px;
+    font-size: 1.35em;
+}
+
+.imagemestoque{
+    display: flex;
+    height: 30px;
+    width: 30px;
+    padding-right: 10px;    
+}
+
+.pesquisa {
+    padding: 8px;
+    width: 25%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.nome-produto{
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+}
+
+.imagemedicao, .imagemdelete{
+    display: flex;
+    height: 25px;
+    width: 25px;
+}
+
+.btn-adicionar-listaEstoque {
+    background-color: #DA3ADC;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 10px;
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease;
+}
+
+.btn-adicionar-listaEstoque:hover {
+    background-color: #b42fb6;
+}
+
+.iconesort{
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd; 
+}
+
+.editar-listaEstoque, .deletar-listaEstoque {
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.tabela-cell-listaEstoque .quantidade{
+    text-align: end;
+}
+
+.traco-listaEstoque{
+    border-bottom: solid 3px #FC671D;
+}
+
+.search-container-listaEstoque {
+    border: 2px solid #ccc;
+    border-radius: 25px;
+    padding: 5px 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-container-listaEstoque input {
+    border: none;
+    outline: none;
+    font-size: 14px;
+}
+
+.search-container-listaEstoque img {
+    width: 30px;
+    height: 30px;
+}
+
+.tabela-listaEstoque {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 900px;
+    margin: auto;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.tabela-head-listaEstoque {
+    background: white;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.tabela-rowheader-listaEstoque {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-radius: 10px;
+    background-color: #fff;
+}
+
+.tabela-row-listaEstoque {    
+    display: flex;
+    text-align: center;
+    padding: 10px 15px 10px 15px;
+    margin-bottom: 20px;
+    margin-right: 5px;
+    border-radius: 10px;
+    border-left: 6px solid #00BCD4;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.tabela-row-listaEstoque .quantidade {
+    display: flex;
+    align-items: center;
+}
+
+.tabela-cell-listaEstoque {
+    display: flex;
+    text-align: center;
+    flex: 1;
+    padding: 5px;
+    font-size: 20px;
+}
+
+.nome {
+    display: flex;
+    align-items: center;
+}
+
+.icone {
+    width: 20px;
+    height: auto;
+    margin-right: 10px;
+}
+
+.sort-icon {
+    width: 12px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.acoes {
+    display: flex;
+    justify-content: flex-end;
+}
+
+button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.editar-listaEstoque img, .deletar-listaEstoque img {
+    width: 20px;
+    height: 20px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.pagination a {
+    padding: 8px 15px;
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+    background-color: var(--magenta);
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    font-size: 18px;
+}
+
+.pagination .anterior:hover, .proxima:hover {
+    background-color: var(--laranja);
+}
+
+.pagination span {
+    font-size: 18px;    
+    font-weight: bold;
+}
+
+.paginas{
+    display: flex;
+    gap: 10px;
+}
+
+@media (max-width: 1000px){
+    .menucentro-listaEstoque{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .principal-listaEstoque{
+        margin-left: 0px;
+        
+    }
+    .estoque-container-listaEstoque{
+        width: 100%;
+    }
+
+    .cabecalho-listaEstoque{
+        display: flex;
+        flex-direction: row;
+        padding: 0px 10px 0px 10px;
+        margin-top: 10px;
+        
+    }
+
+}

@@ -1,0 +1,529 @@
+:root {
+    --laranja: #FC671D;
+    --magenta: #D34AF4;
+    --cinza: #faf6f7;
+    --cinza-escuro:#888;
+    --ciano: #0BC0D3;
+    --base: #2c006a;
+    --branco: #fff;
+    --preto: #000;
+    --roxo: #4D2C87;
+    --sombra-base:rgba(44, 0, 106, 0.4);
+    --sombra-preta:rgba(0, 0, 0, 0.4);
+  }
+
+body{
+    margin: 0;
+    padding: 0;
+    font-family: 'K2D', sans-serif;
+    background-color: linear-gradient(135deg, purple, orange);
+}
+
+*{
+    list-style-type: none;
+}
+
+.containerPage{
+    width: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.containerWidth{
+    width: 80rem;
+}
+
+.ondeVaiFicarOMenu{
+    height: 200px;
+}
+
+.desafiosCampanha{
+
+    width: 1000px;
+    height: 300px;
+    background-color: var(--roxo);
+    color: var(--branco);
+    border-radius: 15px;
+    cursor: pointer;
+    border: none;
+}
+  
+.line{
+    width: 40px;
+    position: relative;
+    left: 10px;
+    width: 40px;
+    height: 0;
+    border: 1px solid var(--laranja);
+}
+
+.botaoCampanha{
+    
+    display: flex;
+    border: none;
+    justify-content: center;
+    align-content: center;
+    margin-bottom: 50px;
+    margin-top: 90px;
+   
+}
+
+.desafiosCampanha{
+    box-shadow: 0px 4px 10px 0px rgba(77, 44, 135, 0.6);
+    transition: 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    text-decoration: none;
+}
+
+.desafiosCampanha:hover{
+    scale:1.03;
+
+}
+
+.decoration{
+    color: var(--laranja);
+}
+
+.valorDesafio{
+    color: var(--ciano);
+}
+
+.outrosColocados{
+    background: rgb(77,44,135);
+    background: linear-gradient(90deg, rgba(77,44,135,1) 0%, rgba(252,103,29,1) 100%);
+    box-shadow: 0px 2px 4px 0px rgba(77, 44, 135, 0.6);
+
+    width: 290px;
+    height: 50px;
+    padding: 2px;
+    border-radius: 15px;
+    margin-top: 10px;
+}
+ 
+.outrosColocados li{
+    width: 100%;
+    height: 100%;
+    background-color: var(--branco);
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    font-size: large;
+    font-size: medium;
+}
+
+.outrosColocados img{
+    width: 40px;
+    height: 40px;
+}
+
+
+.numero1{
+    padding: 0px;
+}
+
+.primeiro{
+    margin-top: 15px;
+    background: rgb(77,44,135);
+    background: linear-gradient(90deg, rgba(77,44,135,1) 0%, rgba(252,103,29,1) 100%);
+    box-shadow: 0px 2px 4px 0px rgba(77, 44, 135, 0.6);
+    width: 290px;
+    height: 70px;
+    padding: 2px;
+    border-radius: 20px;
+
+
+}
+.pagination{
+    margin-bottom: 40px;
+    display: flex;
+}
+.pagination a {
+    font-size: 24px;
+    text-decoration: none;
+    
+}
+
+.pagination div{
+    margin-top: 20px;
+    display: flex;
+}
+
+.pagination img{
+    transform: rotate(180deg);
+    width: 32px;
+    height: 32px;
+}
+
+.pagination span{
+    margin-top: 23px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.primeiro li{
+    width: 100%;
+    height: 100%;
+    background-color: var(--branco);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    font-size: large;
+}
+
+
+.primeiro div{
+    margin-right: 10px;
+}
+
+.primeiro img{
+    width: 40px;
+    height: 40px;
+}
+
+.desafios{
+    padding: 0px;
+}
+
+.circulo {
+    margin-left: 10px;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 100%;
+    color: var(--branco);
+    background-color: var(--ciano);
+   
+}
+
+.parteDeBaixo{
+    
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+
+    
+}
+
+.textDecoratinDesafios{
+    display: flex;
+    margin: 0;
+    margin-left: 10px;
+}
+
+
+
+ .desafiosFlex{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #FDFDFD;
+    width: 799px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 10px;
+    margin-top: 15px;
+    box-shadow: 10px 4px 8px var(--sombra-base);
+    transition: 0.4s;
+    padding: 10px 20px;
+ }
+
+ .desafiosFlex:hover{
+    scale: 1.03;
+    cursor: pointer;
+ }
+
+ .desafiosFlex li{
+    margin-left:10px ;
+    font-size: x-large;
+} 
+
+ .desafiosFlex p{
+    margin-right: 10px;
+    font-size: large;
+}    
+
+.popUpPrimeiroAcesso{
+    border-radius: 10px;
+    padding: 70px;
+    background-color: #FDFDFD;
+    
+}
+
+.formPrimeiroAcesso{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#senha{
+    margin-bottom: 0px;
+    padding: 8px;
+}
+#confirmarSenha{
+    margin-bottom: 0px;
+    padding: 8px;
+}
+.concluirPrimeiroAcesso{
+    width: 150px;
+    height: 30px; 
+    background-color: #FC671D;
+    border: none;
+    color: #fff;
+    border-radius: 10px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+    
+.concluirPrimeiroAcesso:hover{
+    /* escurecer o botao */
+    opacity: 0.8;
+}
+
+
+.labelPopUpPrimeiroAcesso{
+    display: flex;
+    justify-content: center;
+}
+    
+
+
+.senhaPrimeiroAcesso{
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    margin-bottom: 20px;
+}
+
+    
+.confirmarSenhaPrimeiroAcesso{
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    margin-bottom: 20px;
+}
+
+
+.logoPrimeiroAcesso img{
+    
+    width: 200px;
+    height: 120px;
+    margin-top: -30px;
+    margin-bottom: 20px;
+}
+
+@media (min-width: 0px) and (max-width: 430px) {
+.popUpPrimeiroAcesso{
+    border-radius: 10px;
+    padding: 70px;
+    background-color: #FDFDFD;
+    
+}
+
+.nomeDesafio-Home{
+    max-width: 220px;
+    overflow: hidden;
+}
+
+
+#senha{
+    margin-bottom: 0px;
+    padding: 8px;
+}
+#confirmarSenha{
+    margin-bottom: 0px;
+    padding: 8px;
+}
+.concluirPrimeiroAcesso{
+    width: 150px;
+    height: 30px; 
+    background-color: #FC671D;
+    border: none;
+    color: #fff;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+    
+
+
+.labelPopUpPrimeiroAcesso{
+    display: flex;
+    justify-content: center;
+}
+    
+
+.senhaPrimeiroAcesso{
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    margin-bottom: 20px;
+}
+
+    
+.confirmarSenhaPrimeiroAcesso{
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    margin-bottom: 20px;
+}
+
+   
+
+}
+
+.logoPrimeiroAcesso img{
+    
+    width: 200px;
+    height: 120px;
+    margin-top: -30px;
+    margin-bottom: 20px;
+}
+
+@media (min-width: 0px) and (max-width: 1270px) {
+
+    .nomeDesafio-Home{
+        max-width: 220px;
+        overflow: hidden;
+    }
+    
+
+    .botaoCampanha{
+        margin-top: 40px;
+    }
+
+    .botaoCampanha a{
+        margin-top: 40px;
+        font-size: 25px;
+    }
+
+    .desafiosCampanha{
+        height: 190px;
+        width: 390px;
+    }
+
+    .parteDeBaixo{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .desafiosFlex{
+        width: 390px;
+    }
+
+    .outrosColocados{
+        width: 340px;
+    }
+
+    .primeiro{
+        width: 340px;
+    }
+
+    .listaDesafios p{
+        font-size: 12px;
+    }
+
+    .listaDesafios li{
+        font-size: 20px;
+    }
+
+    .pagination{
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+
+    .pagination span{
+        text-align: center;
+    }
+    .listaDesafios{
+        width: auto;
+    }
+
+    .containerWidth{
+        width: 30rem;
+    }
+
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.pagination a {
+    padding: 8px 15px;
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+    background-color: var(--magenta);
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+.pagination .anterior:hover, .proxim    a:hover {
+    background-color: var(--laranja);
+}
+
+.pagination span {
+    font-size: 18px;    
+    font-weight: bold;
+}
+
+.paginas{
+    display: flex;
+    gap: 10px;
+}
+
+.descricao-cascata {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    background-color: #f4f4f4;
+    padding: 0 1rem;
+    margin-top: 0.5rem;
+    border-left: 3px solid var(--laranja);
+}
+
+.descricao-cascata.open {
+    max-height: 500px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: start;
+}
+
+.datas-campanhas {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.datas-campanhas p {
+    white-space: nowrap;
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .datas-campanhas {
+        flex-direction: column;
+    }
+
+    .nomeDesafio-Home{
+        max-width: 220px;
+        overflow: hidden;
+    }
+    
+}

@@ -18,7 +18,7 @@ def login(request):
 
 
 def home(request):
-    users = CustomUser.objects.filter(is_adm=False).order_by("-saldo")[:5]
+    users = CustomUser.objects.filter(is_adm=False).order_by("-pontuacao")[:5]
 
     userId = request.session.get('_auth_user_id')
     user = CustomUser.objects.filter(id=userId).first()
@@ -150,7 +150,7 @@ def cadastrarDesafio(request):
 
 @login_required
 def ranking(request):
-    top_usuarios = CustomUser.objects.filter(is_adm=False).order_by('-saldo')[:7]
+    top_usuarios = CustomUser.objects.filter(is_adm=False).order_by('-pontuacao')[:7]
     
     usuario_logado = request.user
     
@@ -194,36 +194,28 @@ def listaEstoque(request):
 
 
 def listaDeDesafios(request):
-    busca = request.GET.get('busca', '').strip()
-    todos_desafios = Desafio.objects.filter(is_active=True)
+    search = request.GET.get('search', '').strip()
 
-    if busca:
-        desafios_filtrados = todos_desafios.filter(
-            Q(nome__icontains=busca) |  
-            Q(descricao__icontains=busca) |  
-            Q(valor__icontains=busca)  
-        ).distinct()
-        total_encontrados = desafios_filtrados.count()
-    else:
-        
-        desafios_filtrados = todos_desafios
-        total_encontrados = desafios_filtrados.count()
-    
-    desafios_filtrados = desafios_filtrados.order_by('-id')
-    desafio_paginator = Paginator(desafios_filtrados, 5)
+    desafios_queryset = Desafio.objects.filter(is_active=True).order_by('-id')
+
+    if search:
+        desafios_queryset = desafios_queryset.filter(nome__icontains=search)
+
+    # Paginação
+    desafio_paginator = Paginator(desafios_queryset, 5)
     desafio_page = request.GET.get('desafio_page')
     desafios = desafio_paginator.get_page(desafio_page)
+
     campanhas = Campanha.objects.filter(is_active=True)
 
-    context = {
+    return render(request, 'AdmHtml/listaDeDesafios.html', {
         'desafios': desafios,
         'campanhas': campanhas,
-        'busca': busca,
-        'total_resultados': total_encontrados,
-        'total_geral': todos_desafios.count()  
-    }
+        'search': search,   # passa pro template
+    })
 
-    return render(request, 'AdmHtml/listaDeDesafios.html', context)
+
+
 
 def listaDeUsuarios(request):
     nome = request.GET.get('nome', '') 
@@ -231,6 +223,7 @@ def listaDeUsuarios(request):
     user_paginator = Paginator(user, 5)
     user_page = request.GET.get('user_page')
     usuarios = user_paginator.get_page(user_page)
+    
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return render(request, 'AdmHtml/fragments/usuarios.html', {'usuarios': usuarios})
@@ -240,7 +233,7 @@ def listaDeUsuarios(request):
 
 def desafiosCampanha(request, campanha_id):
 
-    desafio = Desafio.objects.filter(idCampanha=campanha_id)
+    desafio = Desafio.objects.filter(idCampanha=campanha_id, is_active=True)
     desafio_paginator = Paginator(desafio, 5)
     desafio_page = request.GET.get('desafio_page')
     desafios = desafio_paginator.get_page(desafio_page)
@@ -259,8 +252,8 @@ def desafiosCampanhaAtivas(request):
 
 def listaDePedidos(request):
     status_pedido = request.GET.get('status')
+    search = request.GET.get('search', '').strip()
 
-    
     status_map = {
         '1': 'Concluído',
         '2': 'Pendente'
@@ -274,18 +267,24 @@ def listaDePedidos(request):
     else:
         compras_queryset = Compra.objects.all().order_by('-id')
 
-    # Pagina apenas as compras
+    # Filtro por nome do usuário (caso tenha search)
+    if search:
+        compras_queryset = compras_queryset.filter(idUsuario__first_name__icontains=search)
+
+    # Pagina apenas as compras já filtradas
     compra_paginator = Paginator(compras_queryset, 5)
     compra_page = request.GET.get('compra_page')
     compras = compra_paginator.get_page(compra_page)
 
-    # Busca todos os itens relacionados às compras paginadas
+    # Busca os itens relacionados às compras paginadas
     pedidos = ItensCompra.objects.select_related('idProduto', 'idCompra').filter(idCompra__in=compras)
 
     return render(request, 'AdmHtml/listaDePedidos.html', {
         'compras': compras,
-        'pedidos': pedidos
+        'pedidos': pedidos,
+        'search': search,  # <-- passa o termo pro template
     })
+
 
 
 def carrinho(request):
@@ -523,3 +522,5 @@ def desenvolvedores(request):
     devs = Desenvolvedores.objects.filter(professor=False)
     professores = Desenvolvedores.objects.filter(professor=True)
     return render(request, 'desenvolvedores.html', {'devs': devs, 'professores': professores})
+
+

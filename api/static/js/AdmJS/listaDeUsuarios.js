@@ -65,10 +65,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (checked) {
       try {
         console.log('🔄 Buscando todos os usuários ativos via API...');
+        const popupLoading = new Popup();
+        popupLoading.showLoadingPopup('Buscando usuários ativos...');
         const res = await fetch('/api/usuarios/ativos-nao-admin/');
         if (!res.ok) throw new Error('Erro ao buscar usuários ativos');
 
         const data = await res.json();
+        popupLoading.hidePopup();
         console.log('📥 Dados recebidos da API:', data);
 
         cacheTodosUsuarios = data
@@ -93,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sincronizarCheckboxesComCache();
       } catch (err) {
         console.error('❌ Erro ao carregar usuários:', err.message);
-        alert('Erro ao selecionar todos os usuários: ' + err.message);
+        showPopup('Erro ao carregar usuários: ' + err.message, 'Erro', 'erro');
         selecionarTodos.checked = false;
         todosSelecionadosGlobalmente = false;
       }
@@ -136,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
       );
     }
 
-    // Atualiza estado visual do "Selecionar Todos"
     const checkboxesAtivos = Array.from(
       listaUsuarios.querySelectorAll(
         '.linhaUsuario-listaDeUsuarios:not(.desativado-listaDeUsuarios) .checkbox',
@@ -158,15 +160,8 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   });
 
-  // Função UNIFICADA: retorna os usuários selecionados (cache global OU seleção manual)
   function getUsuariosSelecionados() {
-    console.log('🧬 [VERSÃO NOVA] getUsuariosSelecionados() CHAMADA!');
-    console.log('🧪 Verificando modo de seleção...');
-    console.log(
-      '   todosSelecionadosGlobalmente =',
-      todosSelecionadosGlobalmente,
-    );
-
+   
     if (todosSelecionadosGlobalmente && cacheTodosUsuarios.length > 0) {
       console.log(
         `✅ Modo "Selecionar Todos" ativo. Retornando ${cacheTodosUsuarios.length} usuários do cache global.`,
@@ -198,13 +193,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!csrf) {
       console.error('❌ Token CSRF não encontrado!');
-      alert('Erro interno: token CSRF ausente.');
       return;
     }
 
     if (usuariosSelecionados.length === 0) {
       console.warn('⚠️ Nenhum usuário selecionado.');
-      alert('Nenhum usuário selecionado!');
+      showPopup('Nenhum usuário selecionado!', 'Erro', 'erro');
+      popupAdicionarMoedas.close();
       return;
     }
 
@@ -212,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const valor = parseInt(inputQuantidade.value);
       if (isNaN(valor) || valor <= 0) {
         console.warn('⚠️ Valor inválido inserido:', inputQuantidade.value);
-        alert('Digite um valor válido e positivo!');
+        showPopup('Digite um valor válido e positivo!', 'Erro', 'erro');
         return;
       }
 
@@ -247,14 +242,19 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(
           `🎉 Operação concluída com sucesso para ${resultados.length} usuário(s).`,
         );
-        alert(
+        const popupAlert = new Popup();
+        popupAlert.showPopup(
           `Operação realizada com sucesso para ${resultados.length} usuários!`,
+          'Sucesso',
+          'sucesso',
         );
         popupAdicionarMoedas.close();
-        location.reload();
+        popupAlert.imgClosed.addEventListener("click", () => {
+          window.location.reload();
+        });
       } catch (error) {
         console.error('❌ Erro durante a operação:', error);
-        alert(`Erro na operação: ${error.message}`);
+        showPopup('Erro na operação: ' + error.message, 'Erro', 'erro');
       }
     };
 
@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const userId = dialog.getAttribute('data-id');
       if (!userId) {
         console.error('ID do usuário não encontrado no dialog!');
-        alert('Erro: ID do usuário não encontrado.');
+        showPopup('ID do usuário não encontrado no dialog!', 'Erro', 'erro');
         return;
       }
 
@@ -365,17 +365,17 @@ document.addEventListener('DOMContentLoaded', () => {
       );
 
       if (response.status == 200) {
-        alert('Usuário editado com sucesso!');
-        location.reload();
+        const popupAlert = new Popup();
+        popupAlert.showPopup('Usuário editado com sucesso!', 'Sucesso', 'sucesso');
+        popupAlert.imgClosed.addEventListener("click", () => {
+          window.location.reload();
+        });
       } else {
-        alert(
-          'Erro ao editar usuário: ' + (response?.error || 'Erro desconhecido'),
-        );
+        showPopup('Erro ao editar usuário: ' + (response?.error || 'Erro desconhecido'),'Erro','erro');
       }
     });
   });
 
-  // Botões de conclusão
   document.querySelectorAll('#concluido').forEach((botao) => {
     botao.addEventListener('click', (e) => {
       const dialog = botao.closest('dialog');
@@ -385,14 +385,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// ================================
-// Funções globais (fora do DOMContentLoaded)
-// ================================
 
 async function alterarSenha(usuarioId) {
-  const confirmar = confirm(
-    'Tem certeza? O usuário receberá um e-mail com a nova senha.',
-  );
+  const confirmar = await confirmarAcao('Tem certeza? O usuário receberá um e-mail com a nova senha.', 'Alterar Senha');
   if (!confirmar) return;
 
   try {
@@ -406,15 +401,13 @@ async function alterarSenha(usuarioId) {
     );
 
     if (response.status === 200) {
-      alert(
-        response.message || 'Senha redefinida e e-mail enviado com sucesso!',
-      );
+      showPopup('Senha redefinida com sucesso!', 'Sucesso', 'sucesso');
     } else {
-      alert('Erro: ' + (response.error || 'Erro desconhecido'));
+      showPopup('Erro ao redefinir senha: ' + response.error, 'Erro', 'erro');
     }
   } catch (error) {
     console.error('Erro ao alterar senha:', error);
-    alert('Erro ao conectar com o servidor.');
+    showPopup('Erro ao alterar senha: ' + error, 'Erro', 'erro');
   }
 }
 
@@ -430,15 +423,15 @@ async function salvarEdicaoUsuario(usuarioId, formData) {
     );
 
     if (response.status === 200) {
-      alert('Usuário atualizado com sucesso!');
+      showPopup('Usuário atualizado com sucesso!', 'Sucesso', 'sucesso');
       return true;
     } else {
-      alert('Erro ao atualizar usuário.');
+      showPopup('Erro ao atualizar usuário: ' + response.error, 'Erro', 'erro');
       return false;
     }
   } catch (error) {
     console.error('Erro ao salvar edição:', error);
-    alert('Erro ao conectar com o servidor.');
+    showPopup('Erro ao salvar edição: ' + error, 'Erro', 'erro');
     return false;
   }
 }
@@ -622,6 +615,7 @@ async function buscarUsuario() {
     );
 
     if (!response || !Array.isArray(response)) {
+      showPopup('Resposta inválida ou vazia', 'Erro', 'erro');
       console.log('Resposta inválida ou vazia');
       return;
     }
@@ -630,6 +624,7 @@ async function buscarUsuario() {
     renderizarUsuarios(response, container);
     searchInput.focus();
   } catch (error) {
+    showPopup('Erro ao buscar usuários: ' + error, 'Erro', 'erro');
     console.log('Erro ao buscar usuários:', error);
     searchInput.focus();
   }
@@ -646,4 +641,136 @@ document.addEventListener('DOMContentLoaded', function () {
       buscarUsuario();
     }, 600);
   });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+const addUsuariosEmMassa = document.getElementById('addUsuariosEmMassa');
+const popup = document.getElementById('popupUsuariosEmMassa');
+const formUsuariosEmMassa = document.getElementById('formUsuariosEmMassa');
+
+addUsuariosEmMassa.addEventListener('click', () => {  
+  popup.showModal();
+});
+
+const fecharUsuariosEmMassa = document.getElementById('fecharUsuariosEmMassa');
+fecharUsuariosEmMassa.addEventListener('click', () => {
+  popup.close();
+});
+
+formUsuariosEmMassa.addEventListener('submit', async (e) => {
+  e.preventDefault(); // Impede o envio padrão do formulário
+
+  const fileInput = document.getElementById('csvFileInput');
+  const file = fileInput.files[0];
+
+  if (!file) {
+      showPopup('Nenhum arquivo selecionado.', 'Erro', 'erro');
+      console.log('Nenhum arquivo selecionado.');
+      return;
+  }
+
+  const formData = new FormData();
+  formData.append('csv_file', file);
+
+  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+  console.log('enviando arquivo...')
+  const popupLoading = new Popup();
+  popupLoading.showLoadingPopup('Processando arquivo ...');
+
+  try {
+      const response = await fetch('/api/usuarios/cadastrar-em-massa/', {
+          method: 'POST',
+          body: formData,
+          headers: {
+              'X-CSRFToken': csrfToken
+          }
+      });
+
+      const data = await response.json();
+
+      popupLoading.hidePopup();
+
+      if (response.ok) {
+          const popupAlert = new Popup();
+          popupAlert.showPopup('Usuários cadastrados com sucesso!', 'Sucesso', 'sucesso');
+          popup.close();
+          popupAlert.imgClosed.addEventListener("click", () => {
+              window.location.reload();
+          });
+      } else {
+          const errorMessage = data.error || data.detail || 'Ocorreu um erro desconhecido.';
+          showPopup('Erro ao cadastrar usuários: ' + errorMessage, 'Erro', 'erro');
+      }
+  } catch (error) {
+      showPopup('Erro ao cadastrar usuários: ' + error.message, 'Erro', 'erro');
+  }
+});
+
+
+})
+
+document.addEventListener('DOMContentLoaded', function(){
+  const btnZerarPontuacao = document.querySelector('.zerarPontuacao-listaDeUsuarios')
+  const dialog = document.getElementById('ZerarDialog')
+  const btnCancelar = document.getElementById('cancelarZerar')
+  const btnConfirmar = document.getElementById('confirmarBtn')
+
+  btnZerarPontuacao.addEventListener('click', () => {
+    dialog.showModal()
+  })
+
+  btnCancelar.addEventListener('click', () => {
+    dialog.close()
+  })
+
+  btnConfirmar.addEventListener('click', async () => {
+    const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const loadingPopup = new Popup();
+    loadingPopup.showLoadingPopup('Zerando pontuação...');
+
+    try {
+        const response = await fetch('api/zerarPontuacao/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrf
+            },
+            body: JSON.stringify({})
+        });
+
+        loadingPopup.hidePopup();
+
+        if (response.ok) {
+            const data = await response.json();
+            showPopup(data.message || 'Pontuação zerada com sucesso!', 'Sucesso', 'sucesso');
+            dialog.close();
+        } else {
+            const errorData = await response.json().catch(() => ({}));
+            showPopup(errorData.message || 'Erro ao zerar pontuação.', 'Erro', 'erro'); 
+        }
+    } catch (error) {
+        loadingPopup.hidePopup();
+        console.error('Erro:', error);
+        showPopup('Erro ao zerar pontuação: ' + error, 'Erro', 'erro');
+    }
+});
+  
+
+  dialog.addEventListener('click', (e) => {
+    const rect = dialog.getBoundingClientRect();
+    const isInDialog = (
+      rect.top <= e.clientY &&
+      e.clientY <= rect.top + rect.height &&
+      rect.left <= e.clientX &&
+      e.clientX <= rect.left + rect.width
+    );
+    if (!isInDialog) {
+      dialog.close();
+    }
+  });
+})
+
+document.getElementById('fecharZerarDialog')?.addEventListener('click', () => {
+  document.getElementById('ZerarDialog').close();
 });

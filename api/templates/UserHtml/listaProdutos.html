@@ -5,7 +5,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/UserCss/listaProdutos.css' %}">
 
-<body class="body-listadeProdutos">
+<div class="body-listadeProdutos">
     {% include "components/user/menuUser.html" %}
 
     <input type="hidden" id="quantidadeMoedas" value="{{quantidade_moedas}}">
@@ -16,8 +16,13 @@
                     <h1>Produtos Digix</h1>
                     <div class="barra-listaProdutos"></div>
                 </div>
-                <div class="search-listaProdutos">
-                    <form method="GET" action="">
+
+                <div class="btn-campanha-listaProdutos">
+                    <a href="{% url 'produtosCampanha' %}" class="btnCampanha">
+                        <i class="fa fa-bullhorn" aria-hidden="true"></i> Produtos de Campanha
+                    </a>
+                </div>                
+                    <form class="search-listaProdutos" method="GET" action="">
                         <i id="lupa-listaProdutos" class="fa fa-search" aria-hidden="true"></i>
                         <input 
                             id="barraBusca-listaProdutos" 
@@ -27,7 +32,6 @@
                             placeholder="Buscar Produto"
                             value="{{ request.GET.search|default:'' }}">
                     </form>
-                </div>
             </div>
             <div class="imagensDigix-listaProdutos">
                 {% for produto in produtos %}
@@ -61,7 +65,7 @@
                     
                     <div class="btn-refresh-listaProdutos"> 
                         {% if produto.quantidade <= 0 %}
-                        <button class="Adquirir-listaProdutos botao-desativado" data-valor="{{produto.id}}">indisponivel</button> 
+                        <button class="Adquirir-listaProdutos botao-desativado" data-valor="{{produto.id}}">indisponível</button> 
                         {% else %}
                         <button class="Adquirir-listaProdutos botão-funcional" data-valor="{{produto.id}}">adquirir</button>   
                         {%endif%}  
@@ -118,7 +122,7 @@
                  <i class="fa fa-arrow-right" aria-hidden="true"></i>
             </a>
         </div>
-        {% endif %}
+        {% endif %} 
     </div>
 
     <script src="{% static 'js/UserJs/listaProdutos.js' %}"></script>

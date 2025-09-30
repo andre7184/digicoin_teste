@@ -8,17 +8,19 @@ ENV PYTHONUNBUFFERED 1
 # Define o diretório de trabalho dentro do contêiner
 WORKDIR /app
 
-# Copia o arquivo de dependências
+# Copia e instala as dependências do requirements.txt
 COPY requirements.txt .
-
-# Instala TODAS as dependências, incluindo o gunicorn
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia todo o código do projeto para o diretório de trabalho
+# Copia todo o código do projeto para dentro do contêiner
 COPY . .
 
-# Expõe a porta 8000, onde o Gunicorn vai rodar
+# Executa o comando 'collectstatic' do Django.
+# Este passo é essencial e agora está incluído.
+RUN python manage.py collectstatic --noinput
+
+# Expõe a porta 8000, onde o Gunicorn estará rodando
 EXPOSE 8000
 
-# O comando para iniciar a aplicação (agora o gunicorn será encontrado)
+# O comando final que inicia a aplicação com Gunicorn
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "Digicoin.wsgi:application"]

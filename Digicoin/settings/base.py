@@ -96,3 +96,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination', 'PAGE_SIZE': 5}
 MEDIA_URL = '/midia/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'midia')
+
+# Caminho para onde o 'collectstatic' vai copiar todos os arquivos estáticos para produção
+STATIC_ROOT = BASE_DIR / "staticfiles"

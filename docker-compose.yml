@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # --- Serviço do Banco de Dados MySQL ---
+  # Este contêiner irá rodar o seu banco de dados MySQL.
+  db:
+    image: mysql:8.0
+    container_name: digicoin_mysql
+    restart: unless-stopped
+    # As variáveis de ambiente abaixo são usadas pelo MySQL para criar
+    # automaticamente o banco de dados e o usuário na primeira vez que ele é iniciado.
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD} # A senha do root do MySQL
+      MYSQL_DATABASE: ${DB_NAME}          # O nome do banco de dados a ser criado
+      MYSQL_USER: ${DB_USER}              # O nome do usuário a ser criado
+      MYSQL_PASSWORD: ${DB_PASSWORD}      # A senha para o novo usuário
+    volumes:
+      # Este volume garante que os dados do seu banco de dados não se percam
+      # quando o contêiner for recriado.
+      - mysql_data:/var/lib/mysql
+    networks:
+      - digicoin-net
+
+  # --- Serviço da Aplicação Django ---
+  # Este contêiner irá rodar a sua aplicação Django.
+  web:
+    # Constrói a imagem a partir do Dockerfile que está no mesmo diretório.
+    build: .
+    container_name: digicoin_web
+    restart: unless-stopped
+    volumes:
+      # Volumes para persistir arquivos estáticos e de mídia.
+      - static_volume:/app/staticfiles
+      - media_volume:/app/midia
+    ports:
+      # IMPORTANTE: Esta é a mudança para funcionar com o Nginx.
+      # A porta 8000 do contêiner só será acessível pelo 'localhost' do servidor,
+      # que é exatamente o que o Nginx precisa para se conectar a ele.
+      - "127.0.0.1:8000:8000"
+    # Carrega as variáveis de ambiente do arquivo .env.
+    env_file: .env
+    # Garante que o contêiner do banco de dados (db) inicie antes deste.
+    depends_on:
+      - db
+    networks:
+      - digicoin-net
+
+# --- Definições de Volumes e Redes ---
+volumes:
+  mysql_data:
+  static_volume:
+  media_volume:
+
+networks:
+  digicoin-net:

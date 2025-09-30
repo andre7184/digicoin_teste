@@ -1,0 +1,111 @@
+# .github/workflows/deploy.yml
+
+name: Deploy Django App
+
+# Gatilho: Este workflow roda toda vez que houver um push na branch 'main'
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    # O workflow vai rodar em uma máquina virtual Linux fornecida pelo GitHub
+    runs-on: ubuntu-latest
+
+    steps:
+      # Passo 1: Clona seu repositório para a máquina virtual do GitHub
+      - name: 1. Checkout do Código
+        uses: actions/checkout@v3
+
+      # Passo 2: Faz o login no Docker Hub usando os segredos que você configurou
+      - name: 2. Login no Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Passo 3: Constrói a imagem Docker a partir do seu Dockerfile e a envia para o Docker Hub
+      - name: 3. Construir e Enviar Imagem Docker
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/digicoin_teste:latest
+
+      # Passo 4: Conecta ao seu servidor via SSH e executa os comandos de deploy
+      - name: 4. Conectar no Servidor e Fazer Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Garante que a pasta do projeto exista no servidor
+            cd /home/deployer/digicoin_project || mkdir -p /home/deployer/digicoin_project && cd /home/deployer/digicoin_project
+
+            # Cria o arquivo docker-compose.yml no servidor com a configuração de produção
+            cat << EOF > docker-compose.yml
+            version: '3.8'
+            services:
+              db:
+                image: mysql:8.0
+                container_name: digicoin_mysql
+                restart: unless-stopped
+                environment:
+                  MYSQL_ROOT_PASSWORD: \${DB_PASSWORD}
+                  MYSQL_DATABASE: \${DB_NAME}
+                  MYSQL_USER: \${DB_USER}
+                  MYSQL_PASSWORD: \${DB_PASSWORD}
+                volumes:
+                  - mysql_data:/var/lib/mysql
+                networks:
+                  - digicoin-net
+              web:
+                image: ${{ secrets.DOCKERHUB_USERNAME }}/digicoin_teste:latest
+                container_name: digicoin_web
+                restart: unless-stopped
+                volumes:
+                  - static_volume:/app/staticfiles
+                  - media_volume:/app/midia
+                ports:
+                  - "127.0.0.1:8000:8000"
+                env_file: .env
+                depends_on:
+                  - db
+                networks:
+                  - digicoin-net
+            volumes:
+              mysql_data:
+              static_volume:
+              media_volume:
+            networks:
+              digicoin-net:
+            EOF
+
+            # Cria o arquivo .env no servidor com os segredos do GitHub
+            echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" > .env
+            echo "DJANGO_ALLOWED_HOSTS=${{ secrets.SSH_HOST }},promptweb.com.br" >> .env
+            echo "DJANGO_SCRIPT_NAME=/digicoin" >> .env
+            echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+            echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+            echo "DB_HOST=db" >> .env
+            
+            # Baixa a versão mais recente da imagem da sua aplicação
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/digicoin_teste:latest
+            
+            # Sobe os serviços. O Docker Compose é inteligente e só vai recriar o que mudou (o container 'web').
+            docker compose up -d --remove-orphans
+
+            # Espera 10 segundos para o container da aplicação iniciar antes de rodar os comandos
+            echo "Aguardando o container da aplicação iniciar..."
+            sleep 10
+            
+            # Executa as migrações do banco de dados DENTRO do container 'web'
+            echo "Executando migrações do banco de dados..."
+            docker compose exec web python manage.py migrate --noinput
+
+            # Coleta os arquivos estáticos DENTRO do container 'web' para o Nginx poder acessá-los
+            echo "Coletando arquivos estáticos..."
+            docker compose exec web python manage.py collectstatic --noinput --clear

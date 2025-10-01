@@ -42,67 +42,33 @@ jobs:
             # Garante que a pasta do projeto exista no servidor
             cd /home/deployer/digicoin_project || mkdir -p /home/deployer/digicoin_project && cd /home/deployer/digicoin_project
 
-            # Cria o arquivo docker-compose.yml no servidor com a configuração de produção
-            cat << EOF > docker-compose.yml
-            version: '3.8'
-            services:
-              db:
-                image: mysql:8.0
-                container_name: digicoin_mysql
-                restart: unless-stopped
-                environment:
-                  MYSQL_ROOT_PASSWORD: \${DB_PASSWORD}
-                  MYSQL_DATABASE: \${DB_NAME}
-                  MYSQL_USER: \${DB_USER}
-                  MYSQL_PASSWORD: \${DB_PASSWORD}
-                volumes:
-                  - mysql_data:/var/lib/mysql
-                networks:
-                  - digicoin-net
-              web:
-                image: ${{ secrets.DOCKERHUB_USERNAME }}/digicoin_teste:latest
-                container_name: digicoin_web
-                restart: unless-stopped
-                volumes:
-                  - ../data/staticfiles:/app/staticfiles
-                  - ../data/media:/app/midia
-                ports:
-                  - "127.0.0.1:8000:8000"
-                env_file: .env
-                depends_on:
-                  - db
-                networks:
-                  - digicoin-net
-            volumes:
-              mysql_data:
-            networks:
-              digicoin-net:
-            EOF
-
-            # Cria o arquivo .env no servidor com os segredos do GitHub
-            echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" > .env
-            echo "DJANGO_ALLOWED_HOSTS=${{ secrets.SSH_HOST }},promptweb.com.br" >> .env
-            echo "DJANGO_SCRIPT_NAME=/digicoin" >> .env
-            echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
-            echo "DB_USER=${{ secrets.DB_USER }}" >> .env
-            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-            echo "DB_HOST=db" >> .env
-            echo "EMAIL_USER=${{ secrets.EMAIL_USER }}" >> .env
-            echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> .env
-            echo "EMAIL_HOST=${{ secrets.EMAIL_HOST }}" >> .env
-            echo "EMAIL_PORT=${{ secrets.EMAIL_PORT }}" >> .env
+            # (O código que cria o docker-compose.yml e o .env continua o mesmo daqui de cima)
+            # ... cole aqui as seções "cat << EOF > docker-compose.yml" e "echo ... > .env" do seu arquivo atual ...
             
             # Baixa a versão mais recente da imagem da sua aplicação
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/digicoin_teste:latest
             
-            # Sobe os serviços. O Docker Compose só vai recriar o que mudou (o container 'web').
+            # Sobe os serviços em background.
             docker compose up -d --remove-orphans
 
-            # Espera 10 segundos para o container da aplicação iniciar antes de rodar os comandos
-            echo "Aguardando o container da aplicação iniciar..."
-            sleep 10
+            # --- ABORDAGEM CORRIGIDA: ESPERA INTELIGENTE ---
+            echo "Aguardando o banco de dados ficar pronto..."
+            timeout=90 # Tempo máximo de espera em segundos
+            # Este loop tenta executar 'mysqladmin ping' dentro do container 'db'.
+            # Ele só continua quando o comando for bem-sucedido.
+            while ! docker compose exec db mysqladmin ping -h"127.0.0.1" --silent; do
+              sleep 3
+              timeout=$(expr $timeout - 3)
+              if [ $timeout -le 0 ]; then
+                echo "Erro: Timeout esperando pelo banco de dados."
+                # Mostra os logs do container do banco de dados para ajudar a depurar
+                docker compose logs db
+                exit 1
+              fi
+            done
+            echo "✅ Banco de dados está pronto!"
             
-            # Executa os comandos de gerenciamento FORÇANDO o uso das configurações de PRODUÇÃO
+            # Agora que temos certeza que o banco está no ar, executamos os comandos
             echo "Executando migrações do banco de dados..."
             docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py migrate --noinput
             

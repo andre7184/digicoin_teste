@@ -1,29 +1,24 @@
 name: Deploy Django App
 
 on:
-  # Dispara o workflow em todo push para a branch 'main'
   push:
     branches:
       - main
 
 jobs:
   build-and-deploy:
-    # O workflow vai rodar em uma máquina virtual Linux fornecida pelo GitHub
     runs-on: ubuntu-latest
 
     steps:
-      # Passo 1: Clona seu repositório para a máquina virtual do GitHub
       - name: 1. Checkout do Código
         uses: actions/checkout@v3
 
-      # Passo 2: Faz o login no Docker Hub usando os segredos que você configurou
       - name: 2. Login no Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Passo 3: Constrói a imagem Docker a partir do seu Dockerfile e a envia para o Docker Hub
       - name: 3. Construir e Enviar Imagem Docker
         uses: docker/build-push-action@v4
         with:
@@ -31,7 +26,6 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/digicoin_teste:latest
 
-      # Passo 4: Conecta ao seu servidor via SSH e executa os comandos de deploy
       - name: 4. Conectar no Servidor e Fazer Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -39,9 +33,71 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # ... (comandos de cd, cat docker-compose.yml, cat .env, docker pull, docker compose up) ...
+            # Garante que a pasta do projeto exista no servidor
+            cd /home/deployer/digicoin_project || mkdir -p /home/deployer/digicoin_project && cd /home/deployer/digicoin_project
+
+            # Cria o arquivo docker-compose.yml no servidor
+            cat << EOF > docker-compose.yml
+            version: '3.8'
+            services:
+              db:
+                image: mysql:8.0
+                command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+                container_name: digicoin_mysql
+                restart: unless-stopped
+                environment:
+                  MYSQL_ROOT_PASSWORD: \${DB_PASSWORD}
+                  MYSQL_DATABASE: \${DB_NAME}
+                  MYSQL_USER: \${DB_USER}
+                  MYSQL_PASSWORD: \${DB_PASSWORD}
+                volumes:
+                  - mysql_data:/var/lib/mysql
+                networks:
+                  - digicoin-net
+              web:
+                image: ${{ secrets.DOCKERHUB_USERNAME }}/digicoin_teste:latest
+                container_name: digicoin_web
+                restart: unless-stopped
+                volumes:
+                  - ../data/staticfiles:/app/staticfiles
+                  - ../data/media:/app/midia
+                ports:
+                  - "127.0.0.1:8000:8000"
+                env_file: .env
+                depends_on:
+                  - db
+                networks:
+                  - digicoin-net
+            volumes:
+              mysql_data:
+            networks:
+              digicoin-net:
+            EOF
+
+            # Cria o arquivo .env no servidor com os segredos do GitHub
+            echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" > .env
+            echo "DJANGO_ALLOWED_HOSTS=${{ secrets.SSH_HOST }},promptweb.com.br" >> .env
+            echo "DJANGO_SCRIPT_NAME=/digicoin" >> .env
+            echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+            echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+            echo "DB_HOST=db" >> .env
+            echo "EMAIL_USER=${{ secrets.EMAIL_USER }}" >> .env
+            echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> .env
+            echo "EMAIL_HOST=${{ secrets.EMAIL_HOST }}" >> .env
+            echo "EMAIL_PORT=${{ secrets.EMAIL_PORT }}" >> .env
             
-            # --- Espera Inteligente (continua a mesma) ---
+            # Limpa o ambiente anterior para garantir um início limpo
+            echo "Limpando ambiente anterior (contêineres e volumes)..."
+            docker compose down -v --remove-orphans
+            
+            # Baixa a versão mais recente da imagem da sua aplicação
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/digicoin_teste:latest
+            
+            # Sobe os serviços em background
+            docker compose up -d
+
+            # Espera inteligente para o banco de dados ficar pronto
             echo "Aguardando o banco de dados ficar pronto..."
             timeout=90
             while ! docker compose exec db mysqladmin ping -h"127.0.0.1" --silent; do
@@ -55,16 +111,14 @@ jobs:
             done
             echo "✅ Banco de dados está pronto!"
             
-            # --- NOVO PASSO DE DIAGNÓSTICO ---
-            echo "--- Exibindo logs do contêiner do banco de dados ANTES do migrate ---"
-            docker compose logs db
+            # Executa os comandos de gerenciamento com as configurações de produção
+            echo "Executando migrações..."
+            docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py migrate --noinput
             
-            # Agora executamos o migrate
-            echo "Executando migrações do banco de dados..."
-            docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py migrate --noinput            
-            
-            echo "Criando usuários administradores padrão..."
+            echo "Criando admins..."
             docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py create_admins
             
             echo "Coletando arquivos estáticos..."
             docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py collectstatic --noinput --clear
+            
+            echo "✅ Deploy concluido com sucesso!"

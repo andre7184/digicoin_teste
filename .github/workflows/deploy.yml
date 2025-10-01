@@ -39,38 +39,29 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Garante que a pasta do projeto exista no servidor
-            cd /home/deployer/digicoin_project || mkdir -p /home/deployer/digicoin_project && cd /home/deployer/digicoin_project
-
-            # (O código que cria o docker-compose.yml e o .env continua o mesmo daqui de cima)
-            # ... cole aqui as seções "cat << EOF > docker-compose.yml" e "echo ... > .env" do seu arquivo atual ...
+            # ... (comandos de cd, cat docker-compose.yml, cat .env, docker pull, docker compose up) ...
             
-            # Baixa a versão mais recente da imagem da sua aplicação
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/digicoin_teste:latest
-            
-            # Sobe os serviços em background.
-            docker compose up -d --remove-orphans
-
-            # --- ABORDAGEM CORRIGIDA: ESPERA INTELIGENTE ---
+            # --- Espera Inteligente (continua a mesma) ---
             echo "Aguardando o banco de dados ficar pronto..."
-            timeout=90 # Tempo máximo de espera em segundos
-            # Este loop tenta executar 'mysqladmin ping' dentro do container 'db'.
-            # Ele só continua quando o comando for bem-sucedido.
+            timeout=90
             while ! docker compose exec db mysqladmin ping -h"127.0.0.1" --silent; do
               sleep 3
               timeout=$(expr $timeout - 3)
               if [ $timeout -le 0 ]; then
                 echo "Erro: Timeout esperando pelo banco de dados."
-                # Mostra os logs do container do banco de dados para ajudar a depurar
                 docker compose logs db
                 exit 1
               fi
             done
             echo "✅ Banco de dados está pronto!"
             
-            # Agora que temos certeza que o banco está no ar, executamos os comandos
+            # --- NOVO PASSO DE DIAGNÓSTICO ---
+            echo "--- Exibindo logs do contêiner do banco de dados ANTES do migrate ---"
+            docker compose logs db
+            
+            # Agora executamos o migrate
             echo "Executando migrações do banco de dados..."
-            docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py migrate --noinput
+            docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py migrate --noinput            
             
             echo "Criando usuários administradores padrão..."
             docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py create_admins

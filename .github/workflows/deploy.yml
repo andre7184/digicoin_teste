@@ -66,8 +66,9 @@ jobs:
                 container_name: digicoin_web
                 restart: unless-stopped
                 volumes:
-                  - static_volume:/app/staticfiles
-                  - media_volume:/app/midia
+                  # MUDANÇA AQUI: Mapeia para uma pasta 'data' local
+                  - ./data/staticfiles:/app/staticfiles
+                  - ./data/media:/app/midia
                 ports:
                   - "127.0.0.1:8000:8000"
                 env_file: .env
@@ -77,8 +78,6 @@ jobs:
                   - digicoin-net
             volumes:
               mysql_data:
-              static_volume:
-              media_volume:
             networks:
               digicoin-net:
             EOF
@@ -92,6 +91,12 @@ jobs:
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
             echo "DB_HOST=db" >> .env
             
+            # --- LINHAS NOVAS ADICIONADAS AQUI ---
+            echo "EMAIL_USER=${{ secrets.EMAIL_USER }}" >> .env
+            echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> .env
+            echo "EMAIL_HOST=${{ secrets.EMAIL_HOST }}" >> .env
+            echo "EMAIL_PORT=${{ secrets.EMAIL_PORT }}" >> .env
+
             # Baixa a versão mais recente da imagem da sua aplicação
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/digicoin_teste:latest
             
@@ -105,6 +110,10 @@ jobs:
             # Executa as migrações do banco de dados DENTRO do container 'web'
             echo "Executando migrações do banco de dados..."
             docker compose exec web python manage.py migrate --noinput
+
+            # Executa seu comando customizado para criar os administradores
+            echo "Criando usuários administradores padrão..."
+            docker compose exec web python manage.py create_admins
 
             # Coleta os arquivos estáticos DENTRO do container 'web' para o Nginx poder acessá-los
             echo "Coletando arquivos estáticos..."

@@ -1,5 +1,5 @@
 # Usar uma imagem oficial do Python como base
-FROM python:3.9-slim
+FROM python:3.10-slim
 
 # Define variáveis de ambiente recomendadas
 ENV PYTHONDONTWRITEBYTECODE 1

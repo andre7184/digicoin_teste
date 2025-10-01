@@ -1,9 +1,7 @@
-# .github/workflows/deploy.yml
-
 name: Deploy Django App
 
-# Gatilho: Este workflow roda toda vez que houver um push na branch 'main'
 on:
+  # Dispara o workflow em todo push para a branch 'main'
   push:
     branches:
       - main
@@ -66,9 +64,8 @@ jobs:
                 container_name: digicoin_web
                 restart: unless-stopped
                 volumes:
-                  # MUDANÇA AQUI: Mapeia para uma pasta 'data' local
-                  - ./data/staticfiles:/app/staticfiles
-                  - ./data/media:/app/midia
+                  - ../data/staticfiles:/app/staticfiles
+                  - ../data/media:/app/midia
                 ports:
                   - "127.0.0.1:8000:8000"
                 env_file: .env
@@ -90,31 +87,27 @@ jobs:
             echo "DB_USER=${{ secrets.DB_USER }}" >> .env
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
             echo "DB_HOST=db" >> .env
-            
-            # --- LINHAS NOVAS ADICIONADAS AQUI ---
             echo "EMAIL_USER=${{ secrets.EMAIL_USER }}" >> .env
             echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> .env
             echo "EMAIL_HOST=${{ secrets.EMAIL_HOST }}" >> .env
             echo "EMAIL_PORT=${{ secrets.EMAIL_PORT }}" >> .env
-
+            
             # Baixa a versão mais recente da imagem da sua aplicação
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/digicoin_teste:latest
             
-            # Sobe os serviços. O Docker Compose é inteligente e só vai recriar o que mudou (o container 'web').
+            # Sobe os serviços. O Docker Compose só vai recriar o que mudou (o container 'web').
             docker compose up -d --remove-orphans
 
             # Espera 10 segundos para o container da aplicação iniciar antes de rodar os comandos
             echo "Aguardando o container da aplicação iniciar..."
             sleep 10
             
-            # Executa as migrações do banco de dados DENTRO do container 'web'
+            # Executa os comandos de gerenciamento FORÇANDO o uso das configurações de PRODUÇÃO
             echo "Executando migrações do banco de dados..."
-            docker compose exec web python manage.py migrate --noinput
-
-            # Executa seu comando customizado para criar os administradores
+            docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py migrate --noinput
+            
             echo "Criando usuários administradores padrão..."
-            docker compose exec web python manage.py create_admins
-
-            # Coleta os arquivos estáticos DENTRO do container 'web' para o Nginx poder acessá-los
+            docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py create_admins
+            
             echo "Coletando arquivos estáticos..."
-            docker compose exec web python manage.py collectstatic --noinput --clear
+            docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py collectstatic --noinput --clear

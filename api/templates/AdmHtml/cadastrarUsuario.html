@@ -1,13 +1,13 @@
 {% extends "base.html" %} {% load static %} {% block content %}
-<link rel="stylesheet" href="{% static 'css/AdmCss/cadastrarUsuario.css'%}" />
+<link rel="stylesheet" href="{% static 'api/css/AdmCss/cadastrarUsuario.css'%}" />
 
 <div class="body-cadastrarUsuario">
   <div class="header-cadastrarUsuario">
-    <img src="{% static 'img/logoAdmin.png' %}" alt="LogoAdmin" />
+    <img src="{% static 'api/img/logoAdmin.png' %}" alt="LogoAdmin" />
     <img
       id="fecharCadastrar"
       class="iconeX-cadastrarUsuario"
-      src="{% static 'img/iconeX.png' %}"
+      src="{% static 'api/img/iconeX.png' %}"
       alt=""
     />
   </div>
@@ -60,5 +60,5 @@
   </form>
 </div>
 
-<script src="{% static 'js/AdmJS/cadastrarUsuario.js' %}"></script>
+<script src="{% static 'api/js/AdmJS/cadastrarUsuario.js' %}"></script>
 {% endblock content %}

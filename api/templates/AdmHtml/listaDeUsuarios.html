@@ -1,6 +1,6 @@
 {% extends "base.html" %} {% load static %} {% block content %}
 
-<link rel="stylesheet" href="{% static 'css/AdmCss/listaDeUsuarios.css'%}" />
+<link rel="stylesheet" href="{% static 'api/css/AdmCss/listaDeUsuarios.css'%}" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 
 {% include "components/adm/menuAdm.html" %}
@@ -8,7 +8,7 @@
 <div class="mainListaUsuarios">
   <div class="divPesquisa-listaDeUsuarios">
     <div class="barraPesquisa-listaDeUsuarios">
-      <img src="{% static 'img/iconeLupa.png' %}" alt="Ícone de busca" />
+      <img src="{% static 'api/img/iconeLupa.png' %}" alt="Ícone de busca" />
       <input id="barraBusca-listaProdutos" type="search" placeholder="Pesquisar usuário" />
     </div>
   </div>
@@ -18,17 +18,17 @@
 
     <div class="botoesUsuario-listaDeUsuarios">
       <button class="addMoedas-listaDeUsuarios" id="addMoedas">
-        <img src="{% static 'img/iconAdicionar.png' %}" alt="" />
+        <img src="{% static 'api/img/iconAdicionar.png' %}" alt="" />
         Gerenciar digicoins
       </button>
 
       <button class="addUsuarios-listaDeUsuarios" id="addUsuarios">
-        <img src="{% static 'img/iconAdicionar.png' %}" alt="" />
+        <img src="{% static 'api/img/iconAdicionar.png' %}" alt="" />
         Adicionar usuário
       </button>
 
       <button class="addUsuarios-listaDeUsuarios laranja-listaDeUsuarios" id="addUsuariosEmMassa">
-        <img src="{% static 'img/iconAdicionar.png' %}" alt="" />
+        <img src="{% static 'api/img/iconAdicionar.png' %}" alt="" />
         Cadastrar usuários CSV
       </button>
     </div>
@@ -37,16 +37,16 @@
   <div class="head-listaDeUsuarios">
     <div class="head-div-listaDeUsuarios">
       <p>Nome</p>
-      <img src="{% static 'img/lista.png' %}" alt="" />
+      <img src="{% static 'api/img/lista.png' %}" alt="" />
     </div>
     <button class="zerarPontuacao-listaDeUsuarios">
-      <img src="{% static 'img/minus.png' %}" alt=""> Zerar Pontuação
+      <img src="{% static 'api/img/minus.png' %}" alt=""> Zerar Pontuação
     </button>
   </div>
   <dialog id="ZerarDialog">
     <div>
       <h2>Deseja zerar a pontuação de todos os usuários?</h2>
-      <img src="{% static 'img/iconeX.png' %}" alt="Fechar" id="fecharZerarDialog">
+      <img src="{% static 'api/img/iconeX.png' %}" alt="Fechar" id="fecharZerarDialog">
     </div>
     <div class="botoes-zerar">
       <button id="confirmarBtn">Confirmar</button>
@@ -67,13 +67,13 @@
     <div class="linhaUsuario-listaDeUsuarios">
       <input type="checkbox" class="checkbox" />
       <div class="infoUser-listaDeUsuarios">
-        <img src="{% static 'img/userBlack.png' %}" alt="" />
+        <img src="{% static 'api/img/userBlack.png' %}" alt="" />
         <input type="hidden" class="idUser-listaDeUsuarios" value="{{usuario.id}}" />
         <span class="nome-listaDeUsuarios">{{usuario.first_name}}</span>
         <span>D$ {{usuario.saldo}} </span>
         <span class="status-listaDeUsuarios"></span>
       </div>
-      <img class="iconeEditar-listaDeUsuarios" id="editar" data-id="{{usuario.id}}" src="{% static 'img/edit.png' %}" alt="" />
+      <img class="iconeEditar-listaDeUsuarios" id="editar" data-id="{{usuario.id}}" src="{% static 'api/img/edit.png' %}" alt="" />
     </div>
 
     {% else %}
@@ -82,20 +82,20 @@
       <input type="checkbox" class="checkbox" disabled />
       <div class="infoUser-listaDeUsuarios">
         <input type="text" class="idUser-listaDeUsuarios" value="{{usuario.id}}" />
-        <img src="{% static 'img/userBlack.png' %}" alt="" />
+        <img src="{% static 'api/img/userBlack.png' %}" alt="" />
         <span class="nome-listaDeUsuarios">{{usuario.first_name}}</span>
         <span class="status-listaDeUsuarios">Desativado</span>
       </div>
-      <img class="iconeEditar-listaDeUsuarios" id="editar" data-id="{{usuario.id}}" src="{% static 'img/edit.png' %}" alt="" />
+      <img class="iconeEditar-listaDeUsuarios" id="editar" data-id="{{usuario.id}}" src="{% static 'api/img/edit.png' %}" alt="" />
     </div>
 
     {% endif %}
 
     <dialog id="editarUsuario-{{usuario.id}}" data-id="{{usuario.id}}" class="editarUsuario">
       <div class="dialog-header">
-        <img src="{% static 'img/logoAdmin.png' %}" alt="LogoAdmin" class="dialog-logo" />
+        <img src="{% static 'api/img/logoAdmin.png' %}" alt="LogoAdmin" class="dialog-logo" />
         <button class="close-dialog">
-          <img src="{% static 'img/iconeX.png' %}" alt="Fechar" class="close-icon" />
+          <img src="{% static 'api/img/iconeX.png' %}" alt="Fechar" class="close-icon" />
         </button>
       </div>
 
@@ -162,8 +162,8 @@
 
 <dialog id="popupCadastrarUsuario" class="popupCadastrarUsuario">
   <div class="header-cadastrarUsuario">
-    <img src="{% static 'img/logoAdmin.png' %}" alt="LogoAdmin" />
-    <img id="fecharCadastrar" class="iconeX-cadastrarUsuario" src="{% static 'img/iconeX.png' %}" alt="" />
+    <img src="{% static 'api/img/logoAdmin.png' %}" alt="LogoAdmin" />
+    <img id="fecharCadastrar" class="iconeX-cadastrarUsuario" src="{% static 'api/img/iconeX.png' %}" alt="" />
   </div>
 
   <form method="POST" class="formUsuario-cadastrarUsuario" id="formUsuario">
@@ -195,8 +195,8 @@
 
 <dialog id="popupAdicionarMoedas" class="popupAdicionarMoedas">
   <div class="header-adicionarMoedas">
-    <img src="{% static 'img/logoAdmin.png' %}" alt="LogoAdmin" />
-    <img class="iconeX-adicionarMoedas" id="fecharAdicionarMoedas" src="{% static 'img/iconeX.png' %}" alt="" />
+    <img src="{% static 'api/img/logoAdmin.png' %}" alt="LogoAdmin" />
+    <img class="iconeX-adicionarMoedas" id="fecharAdicionarMoedas" src="{% static 'api/img/iconeX.png' %}" alt="" />
   </div>
 
   <form class="formAdicionarMoedas" id="formAdicionarMoedas">
@@ -220,7 +220,7 @@
 <dialog id="popupUsuariosEmMassa" class="popupUsuariosEmMassa">
   <div class="header-container">
     <h3>Selecione um arquivo CSV para cadastrar usuários em massa</h3>
-    <img src="{% static 'img/iconeX.png' %}" id="fecharUsuariosEmMassa" alt="" class="iconeX" />
+    <img src="{% static 'api/img/iconeX.png' %}" id="fecharUsuariosEmMassa" alt="" class="iconeX" />
   </div>
 
   <form id="formUsuariosEmMassa" method="dialog">
@@ -231,6 +231,6 @@
   </form>
 </dialog>
 
-<script src="{% static 'js/AdmJS/listaDeUsuarios.js' %}"></script>
-<script src="{% static 'js/AdmJS/cadastrarUsuario.js' %}"></script>
+<script src="{% static 'api/js/AdmJS/listaDeUsuarios.js' %}"></script>
+<script src="{% static 'api/js/AdmJS/cadastrarUsuario.js' %}"></script>
 {% endblock %}

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # --- Serviço do Banco de Dados MySQL ---
   # Este contêiner irá rodar o seu banco de dados MySQL.

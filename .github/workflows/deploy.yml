@@ -36,9 +36,8 @@ jobs:
             # Garante que a pasta do projeto exista no servidor
             cd /home/deployer/digicoin_project || mkdir -p /home/deployer/digicoin_project && cd /home/deployer/digicoin_project
 
-            # Cria o arquivo docker-compose.yml no servidor
+            # Cria o arquivo docker-compose.yml no servidor (sem a tag 'version' obsoleta)
             cat << EOF > docker-compose.yml
-            version: '3.8'
             services:
               db:
                 image: mysql:8.0
@@ -87,14 +86,15 @@ jobs:
             echo "EMAIL_HOST=${{ secrets.EMAIL_HOST }}" >> .env
             echo "EMAIL_PORT=${{ secrets.EMAIL_PORT }}" >> .env
             
-            # Limpa o ambiente anterior para garantir um início limpo
-            echo "Limpando ambiente anterior (contêineres e volumes)..."
-            docker compose down -v --remove-orphans
+            # --- MUDANÇA CRÍTICA AQUI ---
+            # Limpa o ambiente anterior, MAS PRESERVA OS VOLUMES DE DADOS (banco de dados)
+            echo "Limpando ambiente anterior (contêineres)..."
+            docker compose down --remove-orphans
             
             # Baixa a versão mais recente da imagem da sua aplicação
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/digicoin_teste:latest
             
-            # Sobe os serviços em background
+            # Sobe os serviços em background, reconectando ao volume de dados existente
             docker compose up -d
 
             # Espera inteligente para o banco de dados ficar pronto
@@ -112,10 +112,12 @@ jobs:
             echo "✅ Banco de dados está pronto!"
             
             # Executa os comandos de gerenciamento com as configurações de produção
-            echo "Executando migrações..."
+            echo "Executando migrações (se houver alguma nova)..."
             docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py migrate --noinput
             
-            echo "Criando admins..."
+            # Nota: O comando abaixo pode falhar se os admins já existirem.
+            # O ideal é tornar o script 'create_admins' idempotente (verificar se o usuário já existe).
+            echo "Criando admins (se não existirem)..."
             docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py create_admins
             
             echo "Coletando arquivos estáticos..."

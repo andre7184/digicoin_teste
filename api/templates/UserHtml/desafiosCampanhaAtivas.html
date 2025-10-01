@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/UserCss/desafiosCampanha.css' %}">
-<link rel="stylesheet" href="{% static 'components/menu/menu_colaborador/menu_colaborador.css' %}">
+<link rel="stylesheet" href="{% static 'api/css/UserCss/desafiosCampanha.css' %}">
+<link rel="stylesheet" href="{% static 'api/components/menu/menu_colaborador/menu_colaborador.css' %}">
 
 <div class="body-desafiosCampanha">
     {% include 'components/user/menuUser.html' %}
@@ -13,13 +13,13 @@
 
                 <a href='/home/' class="voltarBotao">
                     <button class="voltar">
-                        <img src="{% static 'img/flechaEsquerda.png' %}" alt="">
+                        <img src="{% static 'api/img/flechaEsquerda.png' %}" alt="">
                         <h2>Voltar</h2>
                     </button>
                 </a>
 
                 <div class="titulo-desafiosCampanha">
-                    <img src="{% static 'img/Vector.png' %}" alt="" class="vector">
+                    <img src="{% static 'api/img/Vector.png' %}" alt="" class="vector">
                     <div class="textDecoratinDesafios">Campanhas Ativas</div>
                 </div>
 
@@ -28,7 +28,7 @@
                 <div class="cabecalhoMissoes">
                     <div class="centralizar">
                         <h3>Nome</h3>
-                        <img src="{% static 'img/sort.png' %}" alt="" class="sort">
+                        <img src="{% static 'api/img/sort.png' %}" alt="" class="sort">
                     </div>
                     {# Recompensa removida neste layout #}
                 </div>
@@ -38,7 +38,7 @@
                         <a href="{% url 'desafiosCampanha' i.id %}" class="link-campanha">
                             <div class="desafiosFlex">
                                 <div class="alvoCampanha">
-                                    <img src="{% static 'img/campanhas.png' %}" class="alvo" style="filter: brightness(0) saturate(100%);">
+                                    <img src="{% static 'api/img/campanhas.png' %}" class="alvo" style="filter: brightness(0) saturate(100%);">
                                     <div class="texto-card">{{ i.nome }}</div>
                                 </div>
                             </div>

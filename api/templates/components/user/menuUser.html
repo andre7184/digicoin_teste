@@ -1,19 +1,19 @@
 {% load static%}
 
-<link rel="stylesheet" href="{% static 'css/UserCss/menuUser.css' %}">
+<link rel="stylesheet" href="{% static 'api/css/UserCss/menuUser.css' %}">
 
 <div class="menu">
 
 
         <div class="group">
-            <img src="{% static 'img/group.png'%}" alt="" class="imgGroup" id="imgGroup">
-            <img src="{% static 'img/flechaEsquerda.png' %}" alt="" class="flechaEsquerda" id="flechaEsquerda">
+            <img src="{% static 'api/img/group.png'%}" alt="" class="imgGroup" id="imgGroup">
+            <img src="{% static 'api/img/flechaEsquerda.png' %}" alt="" class="flechaEsquerda" id="flechaEsquerda">
         </div>
 
        
         
         <div class="logo">
-            <img src="{% static 'img/logo.png' %}" alt="" class="imgLogo">
+            <img src="{% static 'api/img/logo.png' %}" alt="" class="imgLogo">
         </div>
 
         <div class="navbar">
@@ -24,7 +24,7 @@
         </div>
 
         <div class="perfil">
-            <img src="{% static 'img/icone.png'%}" alt="" class="imgPerfil" id="imgPerfil">
+            <img src="{% static 'api/img/icone.png'%}" alt="" class="imgPerfil" id="imgPerfil">
             
             <div class="usuario">
                 <p id='nomeUsuario'></p>
@@ -32,9 +32,9 @@
             </div>
 
             <div class="flechaDropdownContainer">
-                <img src="{% static 'img/sino.png'%}" data-sino-desativo="{% static 'img/sino.png'%}"  data-sino-ativo="{% static 'img/sino-ativo.png'%}"  alt="" class="imgSino" id="notificacaoOff">
-                <img src="{% static 'img/flecha.png'%}" alt="" class="imgFlecha" id='imgFlecha'>
-                <img src="{% static 'img/flechaCima.png'%}" alt="" class="imgFlechaCima" id='imgFlechaCima'>
+                <img src="{% static 'api/img/sino.png'%}" data-sino-desativo="{% static 'api/img/sino.png'%}"  data-sino-ativo="{% static 'api/img/sino-ativo.png'%}"  alt="" class="imgSino" id="notificacaoOff">
+                <img src="{% static 'api/img/flecha.png'%}" alt="" class="imgFlecha" id='imgFlecha'>
+                <img src="{% static 'api/img/flechaCima.png'%}" alt="" class="imgFlechaCima" id='imgFlechaCima'>
 
                 <div class="notificacoes-menuUser" id="notificacoes-menuUser"> 
                     
@@ -42,17 +42,17 @@
 
                 <div class="dropdownMenu" id="dropdownMenu">
                     <button id="visualizarPerfil" class="visualizarPerfil">
-                        <img src="{% static 'img/visualizarPerfil.png' %}" alt="">
+                        <img src="{% static 'api/img/visualizarPerfil.png' %}" alt="">
                         <p>Visualizar perfil</p>
                     </button>
                     
                     <button id="historicoCompra" class="historicoCompra">
-                        <img src="{% static 'img/historicoCompra.png' %}" alt="">
+                        <img src="{% static 'api/img/historicoCompra.png' %}" alt="">
                         <p>Histórico de compras</p>
                     </button>
                 
                     <button id="sair" class="sair">
-                        <img src="{% static 'img/sair.png' %}" alt="">
+                        <img src="{% static 'api/img/sair.png' %}" alt="">
                         <p>Sair</p>
                     </button>
                 </div>
@@ -74,17 +74,17 @@
 
 <div class="dropdownMenuMobile-menuUser" id="dropdownMenuMobile">
     <button id="visualizarPerfilMobile" class="visualizarPerfilMobile">
-        <img src="{% static 'img/visualizarPerfil.png' %}" alt="">
+        <img src="{% static 'api/img/visualizarPerfil.png' %}" alt="">
         <p>Visualizar perfil</p>
     </button>
     
     <button id="historicoCompraMobile" class="historicoCompraMobile">
-        <img src="{% static 'img/historicoCompra.png' %}" alt="">
+        <img src="{% static 'api/img/historicoCompra.png' %}" alt="">
         <p>Histórico de compras</p>
     </button>
 
     <button id="sairMobile" class="sairMobile">
-        <img src="{% static 'img/sair.png' %}" alt="">
+        <img src="{% static 'api/img/sair.png' %}" alt="">
         <p>Sair</p>
     </button>
 </div>
@@ -94,4 +94,4 @@
 </dialog>
 
 
-<script src="{% static 'js/UserJs/menuUser.js' %}"></script>
+<script src="{% static 'api/js/UserJs/menuUser.js' %}"></script>

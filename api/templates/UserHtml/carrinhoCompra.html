@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 
-<link rel="stylesheet" href="{% static 'css/UserCss/carrinhoCompra.css' %}">
+<link rel="stylesheet" href="{% static 'api/css/UserCss/carrinhoCompra.css' %}">
 
 <div class="body-carrinhoCompras">
   {% include "components/user/menuUser.html" %}
@@ -15,7 +15,7 @@
       {% csrf_token %}
       
       <div class="itemGridHeader-carrinhoCompras">
-        <div class="itemGridCell-carrinhoCompras col-produto"><img class="iconeProduto-carrinhoCompras" src="{% static 'img/produto.png' %}" alt="produtos">Produto</div>
+        <div class="itemGridCell-carrinhoCompras col-produto"><img class="iconeProduto-carrinhoCompras" src="{% static 'api/img/produto.png' %}" alt="produtos">Produto</div>
         <div class="itemGridCell-carrinhoCompras col-valor">Valor</div>
         <div class="itemGridCell-carrinhoCompras col-acoes">Ações</div>
       </div>
@@ -31,11 +31,11 @@
     </div>
   </div>
   <script>
-    const imgRemoverSrc = "{% static 'img/remover.png' %}";
+    const imgRemoverSrc = "{% static 'api/img/remover.png' %}";
   </script>
-  <script type="module" src="{% static 'js/UserJs/carrinhoCompra.js' %}"></script>
-  <script type="module" src="{% static 'js/UserJs/finalizarCompra.js' %}"></script>
-  <script type="module" src="{% static 'js/popup.js' %}"></script>
+  <script type="module" src="{% static 'api/js/UserJs/carrinhoCompra.js' %}"></script>
+  <script type="module" src="{% static 'api/js/UserJs/finalizarCompra.js' %}"></script>
+  <script type="module" src="{% static 'api/js/popup.js' %}"></script>
 </div>
 
 </html>

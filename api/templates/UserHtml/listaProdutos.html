@@ -3,7 +3,7 @@
 {% block content %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{% static 'css/UserCss/listaProdutos.css' %}">
+<link rel="stylesheet" href="{% static 'api/css/UserCss/listaProdutos.css' %}">
 
 <div class="body-listadeProdutos">
     {% include "components/user/menuUser.html" %}
@@ -125,6 +125,6 @@
         {% endif %} 
     </div>
 
-    <script src="{% static 'js/UserJs/listaProdutos.js' %}"></script>
+    <script src="{% static 'api/js/UserJs/listaProdutos.js' %}"></script>
 </div>
 {% endblock %}

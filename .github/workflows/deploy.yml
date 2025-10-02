@@ -36,7 +36,28 @@ jobs:
             # Garante que a pasta do projeto exista no servidor
             cd /home/deployer/digicoin_project || mkdir -p /home/deployer/digicoin_project && cd /home/deployer/digicoin_project
 
-            # Cria o arquivo docker-compose.yml no servidor (sem a tag 'version' obsoleta)
+            # Cria o arquivo mysql.txt no servidor
+            cat << EOF > mysql.txt
+            CREATE DATABASE IF NOT EXISTS \`${{ secrets.DB_NAME }}\`;
+            USE \`${{ secrets.DB_NAME }}\`;
+            SET GLOBAL event_scheduler = ON;
+            DELIMITER \$\$
+            CREATE PROCEDURE desativar_itens_expirados()
+            BEGIN
+                UPDATE api_desafio SET is_active = FALSE WHERE dataFim < CURDATE() AND is_active = TRUE;
+                UPDATE api_produto SET is_active = FALSE WHERE idCampanha_id IN (SELECT id FROM api_campanha WHERE dataFim < CURDATE() AND is_active = TRUE);
+                UPDATE api_desafio SET is_active = FALSE WHERE idCampanha_id IN (SELECT id FROM api_campanha WHERE dataFim < CURDATE() AND is_active = TRUE);
+                UPDATE api_campanha SET is_active = FALSE WHERE dataFim < CURDATE() AND is_active = TRUE;
+            END\$\$
+            DELIMITER ;
+            CREATE EVENT IF NOT EXISTS desativar_campanhas_event
+            ON SCHEDULE EVERY 1 DAY
+            STARTS NOW()
+            DO
+                CALL desativar_itens_expirados();
+            EOF
+
+            # Cria o docker-compose.yml com o caminho para o mysql.txt ajustado
             cat << EOF > docker-compose.yml
             services:
               db:
@@ -51,6 +72,7 @@ jobs:
                   MYSQL_PASSWORD: \${DB_PASSWORD}
                 volumes:
                   - mysql_data:/var/lib/mysql
+                  - ./mysql.txt:/docker-entrypoint-initdb.d/init.sql
                 networks:
                   - digicoin-net
               web:
@@ -72,11 +94,10 @@ jobs:
             networks:
               digicoin-net:
             EOF
-
-            # Cria o arquivo .env no servidor com os segredos do GitHub
+            
+            # Cria o arquivo .env no servidor
             echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" > .env
             echo "DJANGO_ALLOWED_HOSTS=${{ secrets.SSH_HOST }},promptweb.com.br" >> .env
-            # echo "DJANGO_SCRIPT_NAME=/digicoin" >> .env
             echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
             echo "DB_USER=${{ secrets.DB_USER }}" >> .env
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
@@ -86,15 +107,18 @@ jobs:
             echo "EMAIL_HOST=${{ secrets.EMAIL_HOST }}" >> .env
             echo "EMAIL_PORT=${{ secrets.EMAIL_PORT }}" >> .env
             
-            # --- MUDANÇA CRÍTICA AQUI ---
-            # Limpa o ambiente anterior, MAS PRESERVA OS VOLUMES DE DADOS (banco de dados)
-            echo "Limpando ambiente anterior (contêineres)..."
-            docker compose down --remove-orphans
+            # Limpa o ambiente anterior, MAS PRESERVA OS VOLUMES (seu banco de dados)
+            # echo "Parando contêineres antigos..."
+            # docker compose down --remove-orphans
+
+            # Limpa o ambiente anterior para garantir um início limpo
+            echo "Limpando ambiente anterior (contêineres e volumes)..."
+            docker compose down -v --remove-orphans
             
             # Baixa a versão mais recente da imagem da sua aplicação
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/digicoin_teste:latest
             
-            # Sobe os serviços em background, reconectando ao volume de dados existente
+            # Sobe os serviços em background
             docker compose up -d
 
             # Espera inteligente para o banco de dados ficar pronto
@@ -112,15 +136,14 @@ jobs:
             echo "✅ Banco de dados está pronto!"
             
             # Executa os comandos de gerenciamento com as configurações de produção
-            echo "Executando migrações (se houver alguma nova)..."
+            echo "Executando migrações..."
             docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py migrate --noinput
             
-            # Nota: O comando abaixo pode falhar se os admins já existirem.
-            # O ideal é tornar o script 'create_admins' idempotente (verificar se o usuário já existe).
-            echo "Criando admins (se não existirem)..."
+            echo "Criando admins..."
             docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py create_admins
             
             echo "Coletando arquivos estáticos..."
             docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py collectstatic --noinput --clear
             
+            echo "Iniciando o servidor..."            
             echo "✅ Deploy concluido com sucesso!"

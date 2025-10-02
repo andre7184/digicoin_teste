@@ -5,7 +5,7 @@
 {% csrf_token %}
 {% include 'components/adm/popUpAdicionarProduto.html'%}
 
-<link rel="stylesheet" href="{% static 'api/css/AdmCss/campanhas.css' %}" />
+<link rel="stylesheet" href="{% static 'css/AdmCss/campanhas.css' %}" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +16,7 @@
     <div class="campanhas_pre">
         <div class="campo_pesquisar" id="campo-pesquisar">
             <div class="pesquisar">
-                <img class="lupa" src="{% static 'api/img/pesquisa.png' %}" alt="" />
+                <img class="lupa" src="{% static 'img/pesquisa.png' %}" alt="" />
                 <input
                     class="pesquisar_campanha"
                     id="barraBusca"
@@ -38,7 +38,7 @@
                     value="5"
                     id="botao-criar-campanha"
                 >
-                    <img src="{% static 'api/img/criar_campanha.png' %}" alt="Exportar" />
+                    <img src="{% static 'img/criar_campanha.png' %}" alt="Exportar" />
                     Criar Campanha
                 </button>
             </div>
@@ -48,7 +48,7 @@
             <div class="cabecalho-campanha">
                 <div class="tabela_campanha_cabecalho_nome" id="coluna-nome">
                     <h2>Nome</h2>
-                    <img src="{% static 'api/img/sort.png' %}" alt="Nome" style="width: 24px; height: 24px;" />
+                    <img src="{% static 'img/sort.png' %}" alt="Nome" style="width: 24px; height: 24px;" />
                 </div>
                 <div class="tabela_campanha_cabecalho_termino" id="coluna-termino">
                     <h2>Término</h2>
@@ -75,14 +75,14 @@
                                     onclick="EditarCampanhas({{campanha.id}})"
                                     id="editar-campanha-{{ campanha.id }}"
                                 >
-                                    <img src="{% static 'api/img/edit.png' %}" alt="botao editar" />
+                                    <img src="{% static 'img/edit.png' %}" alt="botao editar" />
                                 </button>
                                 {% comment %} <button
                                     class="button-campanha"
                                     onclick="inativarCampanhas({{campanha.id}})"
                                     id="excluir-campanha-{{ campanha.id }}"
                                 >
-                                    <img src="{% static 'api/img/iconeDeletar.png' %}" alt="deletar">
+                                    <img src="{% static 'img/iconeDeletar.png' %}" alt="deletar">
                                 </button> {% endcomment %}
                             </div>
                         </div>
@@ -111,7 +111,7 @@
 
 </div>
 
-<script src="{% static 'api/js/AdmJS/criarCampanha.js' %}"></script>
+<script src="{% static 'js/AdmJS/criarCampanha.js' %}"></script>
 <script>
     {% comment %} document.querySelectorAll('*').forEach(el => el.style.outline = '1px solid red'); {% endcomment %}
 

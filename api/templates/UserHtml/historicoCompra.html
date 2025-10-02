@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Histórico de Compra</title>
-    <link rel="stylesheet" href="{% static 'api/css/UserCss/historicoCompra.css' %}">
+    <link rel="stylesheet" href="{% static 'css/UserCss/historicoCompra.css' %}">
 
 </head>
 <body>
@@ -18,7 +18,7 @@
             <div class="historico-compra-cabecalho">
                 <div class="historico-compra-titulo">
                     <div class="historico-compra-titulo-icone">
-                        <img src="{% static 'api/img/historico.png' %}" alt="icone historico">
+                        <img src="{% static 'img/historico.png' %}" alt="icone historico">
                         <h2 class="titulo-historico">Histórico de Compras</h2>
                     </div>
                     <div class="historico-compra-cabecalho-underline"></div>
@@ -27,7 +27,7 @@
                     <form method="GET" action="{% url 'historicoCompra' %}" class="search-container-listaEstoque">
                         <div class="historico-compra-barra-pesquisa-busca-container">
                           <div class="historico-compra-barra-pesquisa-busca-container1">
-                            <img src="{% static 'api/img/iconeLupa.png' %}" alt="/Lupa">
+                            <img src="{% static 'img/iconeLupa.png' %}" alt="/Lupa">
                             <input
                               type="text"
                               id="campoNome"
@@ -48,8 +48,8 @@
                     <div class="historico-compra-tabela-rowheader">
                         <div class="historico-compra-tabela-cell itens">Itens <br><span class="historico-compra-titulo-colId-nome"></span></div>
                         <div class="historico-compra-tabela-cell quantidadeItens">Qtd</div>
-                        <div class="historico-compra-tabela-cell dataCompra">Data <a href="?sort_by=dataCompra&order={% if request.GET.sort_by == 'dataCompra' and request.GET.order == 'asc' %}desc{% else %}asc{% endif %}"><img class="historico-compra-icone-sort {% if request.GET.sort_by == 'dataCompra' and request.GET.order == 'desc' %}historico-compra-sort-desc{% else %}historico-compra-sort-asc{% endif %}" src="{% static 'api/img/imgRanking/sort.png' %}" alt="Sort"></a></div>
-                        <div class="historico-compra-tabela-cell total">Valor <a href="?sort_by=total&order={% if request.GET.sort_by == 'total' and request.GET.order == 'asc' %}desc{% else %}asc{% endif %}"><img class="historico-compra-icone-sort {% if request.GET.sort_by == 'total' and request.GET.order == 'desc' %}historico-compra-sort-desc{% else %}historico-compra-sort-asc{% endif %}" src="{% static 'api/img/imgRanking/sort.png' %}" alt="Sort"></a></div>
+                        <div class="historico-compra-tabela-cell dataCompra">Data <a href="?sort_by=dataCompra&order={% if request.GET.sort_by == 'dataCompra' and request.GET.order == 'asc' %}desc{% else %}asc{% endif %}"><img class="historico-compra-icone-sort {% if request.GET.sort_by == 'dataCompra' and request.GET.order == 'desc' %}historico-compra-sort-desc{% else %}historico-compra-sort-asc{% endif %}" src="{% static 'img/imgRanking/sort.png' %}" alt="Sort"></a></div>
+                        <div class="historico-compra-tabela-cell total">Valor <a href="?sort_by=total&order={% if request.GET.sort_by == 'total' and request.GET.order == 'asc' %}desc{% else %}asc{% endif %}"><img class="historico-compra-icone-sort {% if request.GET.sort_by == 'total' and request.GET.order == 'desc' %}historico-compra-sort-desc{% else %}historico-compra-sort-asc{% endif %}" src="{% static 'img/imgRanking/sort.png' %}" alt="Sort"></a></div>
                         <div class="historico-compra-tabela-cell entrega">Tipo</div>
                         <div class="historico-compra-tabela-cell status">Status</div>
                     </div>
@@ -61,7 +61,7 @@
                         <div class="historico-compra-tabela-cell itens" data-label="Itens">
                             <div class="historico-compra-local-itens">
                                 <div class="historico-compra-icone-itens">
-                                    <img class="historicoCompraIconeProduto" src="{% static 'api/img/produto.png' %}" alt="/produto">
+                                    <img class="historicoCompraIconeProduto" src="{% static 'img/produto.png' %}" alt="/produto">
                                 </div>
                                 <div class="historico-compra-itens">
                                     {% for item in compra.itens %}
@@ -114,7 +114,7 @@
             
         </div> 
     </div>
-    <script src="{% static 'api/js/UserJs/historicoCompra.js' %}"></script>
+    <script src="{% static 'js/UserJs/historicoCompra.js' %}"></script>
 </body>
 </html>
 

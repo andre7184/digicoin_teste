@@ -2,8 +2,8 @@
 {% load static %}
 {% block content %}
 
-<link rel="stylesheet" href="{% static 'api/css/AdmCss/listaDePedidos.css'%}">
-<link rel="stylesheet" href="{% static 'api/css/AdmCss/paginacao.css'%}">
+<link rel="stylesheet" href="{% static 'css/AdmCss/listaDePedidos.css'%}">
+<link rel="stylesheet" href="{% static 'css/AdmCss/paginacao.css'%}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 {% include 'components/adm/menuAdm.html' %}
@@ -13,7 +13,7 @@
         <form method="get">
         <div class="campo_pesquisar" id="campo-pesquisar">
             <div class="pesquisar">
-                <img class="lupa" src="{% static 'api/img/pesquisa.png' %}" alt="" />
+                <img class="lupa" src="{% static 'img/pesquisa.png' %}" alt="" />
                     <input
                         type="search"
                         id="barraBusca"
@@ -56,10 +56,10 @@
             {% for compra in compras %}
             <div class="linha-listaDePedidos" onclick="toggleItens('{{ compra.id }}')" style="cursor: pointer;" data-nome="{{ compra.idUsuario.first_name }}" >
                 <div class="nome-listaDePedidos">
-                    <img class="iconedigix-listaDePedidos" src="{% static 'api/img/digixlogo.png'%}" alt="icone">
+                    <img class="iconedigix-listaDePedidos" src="{% static 'img/digixlogo.png'%}" alt="icone">
                     <p>{{ compra.idUsuario.first_name }} - {{ compra.pedido }}</p>
                 </div>
-                <img class="caminhao-listaDePedidos" src="{% static 'api/img/truck.png'%}" alt="icone">
+                <img class="caminhao-listaDePedidos" src="{% static 'img/truck.png'%}" alt="icone">
             </div>
             
             
@@ -266,6 +266,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 
-<script src="{% static 'api/js/AdmJs/listaDePedidos.js' %}"></script>
+<script src="{% static 'js/AdmJs/listaDePedidos.js' %}"></script>
 
 {% endblock content %}

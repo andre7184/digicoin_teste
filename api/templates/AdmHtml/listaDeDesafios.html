@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 
-<link rel="stylesheet" href="{% static 'api/css/AdmCss/listaDeDesafios.css'%}">
+<link rel="stylesheet" href="{% static 'css/AdmCss/listaDeDesafios.css'%}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 {% include 'components/adm/menuAdm.html' %}
@@ -10,7 +10,7 @@
 <div class="mainListaDesafios-listaDeDesafios">
     <form method="get" class="form-busca">
         <div class="barraPesquisa-listaDeDesafios">
-            <img src="{% static 'api/img/iconeLupa.png' %}" alt="">
+            <img src="{% static 'img/iconeLupa.png' %}" alt="">
             <input
                 type="search"
                 id="barraBusca"
@@ -29,7 +29,7 @@
 
         <div class="botoesDesafio-listaDeDesafios">
             <button class="addDesafio-listaDeDesafios" id="addDesafio">
-                <img src="{% static 'api/img/iconAdicionar.png' %}" alt="">
+                <img src="{% static 'img/iconAdicionar.png' %}" alt="">
                 Adicionar desafio
             </button>
         </div>
@@ -39,7 +39,7 @@
     <div class="head-listaDeDesafios">
         <div class="headNome-listaDeDesafios">
             <p>Nome</p>
-            <img src=" {% static 'api/img/lista.png' %}" alt="">
+            <img src=" {% static 'img/lista.png' %}" alt="">
         </div>
         <p class='recompensa-listaDeDesafios'>Recompensa $</p>
     </div>
@@ -50,15 +50,15 @@
         <div class='desafio-listaDeDesafios linha-desafio' data-nome="{{ desafio.nome|lower }}">
             <input type="hidden" class="idDesafio" value="{{desafio.id}}">
             <div class="desafioLeft-listaDeDesafios">
-                <img src="{% static 'api/img/alvoCampanha.png' %}" alt="">
+                <img src="{% static 'img/alvoCampanha.png' %}" alt="">
                 <p id="nomeDesafio" class='nomeDesafio-listaDeDesafios'>{{ desafio.nome }}</p>
             </div>
 
             <div class="desafioRight-listaDeDesafios">
                 <p class="dg-listaDeDesafios">DG$ <span id="valor" class="valor-listaDeDesafios">{{desafio.valor}}</span></p>
                 <div class="botoesEditar-listaDeDesafios">
-                    <img class="botaoEditar-listaDeDesafios" data-id="{{desafio.id}}" src="{% static 'api/img/edit.png' %}" alt="">
-                    <img src="{% static 'api/img/lixeira.png' %}" alt="Desativar" class="btn-desativar-desafio-listaDeDesafios" data-id="{{ desafio.id }}">
+                    <img class="botaoEditar-listaDeDesafios" data-id="{{desafio.id}}" src="{% static 'img/edit.png' %}" alt="">
+                    <img src="{% static 'img/lixeira.png' %}" alt="Desativar" class="btn-desativar-desafio-listaDeDesafios" data-id="{{ desafio.id }}">
                 </div>
             </div>
 
@@ -66,12 +66,12 @@
                 <div class='body-cadastrarDesafio'>
                     <div class="header-cadastrarDesafio">
                         <div class = "header-cadastrarDesafio1">
-                            <img src="{% static 'api/img/logoAdmin.png' %}" alt="LogoAdmin">
+                            <img src="{% static 'img/logoAdmin.png' %}" alt="LogoAdmin">
                         </div>
                         
                         <div class="botao-cadastrarDesafio">
 
-                            <img class="iconeX-cadastrarDesafio" id='iconeX' src="{% static 'api/img/iconeX.png' %}" alt="">
+                            <img class="iconeX-cadastrarDesafio" id='iconeX' src="{% static 'img/iconeX.png' %}" alt="">
                         </div>
                     </div>
 
@@ -170,11 +170,11 @@
         <div class="header-cadastrarDesafio">
 
             <div class = "header-cadastrarDesafio1">
-                <img src="{% static 'api/img/logoAdmin.png' %}" alt="LogoAdmin">
+                <img src="{% static 'img/logoAdmin.png' %}" alt="LogoAdmin">
             </div>
             <div class="botao-cadastrarDesafio">
                 
-                <img class="iconeX-cadastrarDesafio" id='iconeX' src="{% static 'api/img/iconeX.png' %}" alt="">
+                <img class="iconeX-cadastrarDesafio" id='iconeX' src="{% static 'img/iconeX.png' %}" alt="">
             </div>
         </div>
     
@@ -241,8 +241,8 @@
 </dialog>
 
 
-<script src="{% static 'api/js/AdmJs/cadastrarDesafio.js' %}"></script>
-<script src="{% static 'api/js/AdmJs/listaDeDesafios.js' %}"></script>
+<script src="{% static 'js/AdmJs/cadastrarDesafio.js' %}"></script>
+<script src="{% static 'js/AdmJs/listaDeDesafios.js' %}"></script>
 
 <script>
     function aplicarFiltro(termo) {

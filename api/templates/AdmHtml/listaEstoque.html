@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 
-<link rel="stylesheet" href="{% static 'api/css/AdmCss/listaEstoque.css' %}">
+<link rel="stylesheet" href="{% static 'css/AdmCss/listaEstoque.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 
@@ -14,21 +14,21 @@
         <div class="estoque-container-listaEstoque">
             <div class="barra-pesquisa-listaEstoque">
                 <form method="GET" action="." class="search-container-listaEstoque">
-                    <img src="{% static 'api/img/iconeLupa.png' %}" alt="Lupa">
+                    <img src="{% static 'img/iconeLupa.png' %}" alt="Lupa">
                     <input type="search" name="search" id="barra-pesquisa-listaEstoque" placeholder="Pesquisar produto" value="{{ request.GET.search }}">
                 </form>
             </div>
             <div class="cabecalho-listaEstoque">
                 <h2><span class="traco-listaEstoque">Est</span>oque</h2>
                 <button type="button" class="btn-adicionar-listaEstoque buttonOpen">
-                    <img src="{% static 'api/img/iconAdicionar.png' %}" alt=""> Adicionar Produto
+                    <img src="{% static 'img/iconAdicionar.png' %}" alt=""> Adicionar Produto
                 </button>
             </div>
             <div class="tabela-listaEstoque">
                 <div class="tabela-head-listaEstoque">
                     <div class="tabela-rowheader-listaEstoque">
                         <div class="tabela-cell-listaEstoque nome">
-                            Nome <img class="sort-icon" src="{% static 'api/img/imgRanking/sort.png' %}" alt="Sort">
+                            Nome <img class="sort-icon" src="{% static 'img/imgRanking/sort.png' %}" alt="Sort">
                         </div>
                         <div class="tabela-cell-listaEstoque quantidade">Quantidade</div>
                         <div class="tabela-cell-listaEstoque acoes"></div>
@@ -39,16 +39,16 @@
                     {% for item in estoque %}
                     <div class="tabela-row-listaEstoque" data-nome="{{ item.nome|lower }}">
                         <div class="tabela-cell-listaEstoque nome">
-                            <img class="icone" src="{% static 'api/img/produto.png' %}" alt="produto">
+                            <img class="icone" src="{% static 'img/produto.png' %}" alt="produto">
                             {{ item.nome }}
                         </div>
                         <div class="tabela-cell-listaEstoque quantidade">{{ item.quantidade }}</div>
                         <div class="tabela-cell-listaEstoque acoes">
                             <button type="button" class="editar-listaEstoque" onclick="Editar({{ item.id }})">
-                                <img src="{% static 'api/img/iconeEditar.png' %}" alt="editar">
+                                <img src="{% static 'img/iconeEditar.png' %}" alt="editar">
                             </button>
                             <button type="button" class="deletar-listaEstoque" onclick="inativar({{ item.id }})">
-                                <img src="{% static 'api/img/iconeDeletar.png' %}" alt="deletar">
+                                <img src="{% static 'img/iconeDeletar.png' %}" alt="deletar">
                             </button>
                         </div>
                     </div>
@@ -98,6 +98,6 @@
     });
 </script>
 
-<script src="{% static 'api/js/AdmJS/listaEstoque.js' %}"></script>
+<script src="{% static 'js/AdmJS/listaEstoque.js' %}"></script>
 
 {% endblock %}

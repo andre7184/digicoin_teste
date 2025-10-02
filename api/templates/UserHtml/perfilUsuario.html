@@ -9,14 +9,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil do Usuário</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'api/css/UserCss/perfilUsuario.css' %}">
+    <link rel="stylesheet" href="{% static 'css/UserCss/perfilUsuario.css' %}">
 </head>
 <body>
     <div class="containerMaior">
     <div class="container">
         <div class="perfil">
             <button class="botaoSairPerfilUsuario" onclick="document.getElementById('perfilUsuario').close()">
-                <img src="{% static 'api/img/flechaEsquerda.png'%}" alt="Flecha-Voltar">
+                <img src="{% static 'img/flechaEsquerda.png'%}" alt="Flecha-Voltar">
             </button>
             <i class="fa-solid fa-user-circle" style="font-size: 50px; color: #5a2d82;"></i>
             <h2 id='nomeUsuarioPopUp'></h2>
@@ -38,7 +38,7 @@
                     {% endif %}
                     {% endfor %}
                 </div>
-                <script src="{% static 'api/js/UserJs/perfilUsuario.js' %}"></script>
+                <script src="{% static 'js/UserJs/perfilUsuario.js' %}"></script>
             </div>
         </div>
     </div>

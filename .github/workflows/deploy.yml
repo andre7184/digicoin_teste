@@ -108,12 +108,12 @@ jobs:
             echo "EMAIL_PORT=${{ secrets.EMAIL_PORT }}" >> .env
             
             # Limpa o ambiente anterior, MAS PRESERVA OS VOLUMES (seu banco de dados)
-            # echo "Parando contêineres antigos..."
-            # docker compose down --remove-orphans
+            echo "Parando contêineres antigos..."
+            docker compose down --remove-orphans
 
             # Limpa o ambiente anterior para garantir um início limpo
-            echo "Limpando ambiente anterior (contêineres e volumes)..."
-            docker compose down -v --remove-orphans
+            # echo "Limpando ambiente anterior (contêineres e volumes)..."
+            # docker compose down -v --remove-orphans
             
             # Baixa a versão mais recente da imagem da sua aplicação
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/digicoin_teste:latest

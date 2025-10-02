@@ -81,7 +81,7 @@ jobs:
                 restart: unless-stopped
                 volumes:
                   - ../data/staticfiles:/app/staticfiles
-                  - ../data/media:/app/midia
+                  - ../data/media:/app/media
                 ports:
                   - "127.0.0.1:8000:8000"
                 env_file: .env

@@ -25,7 +25,7 @@ services:
     restart: unless-stopped
     volumes:
       - static_volume:/app/staticfiles
-      - media_volume:/app/midia
+      - media_volume:/app/media
     ports:
       # A porta 8000 só é acessível pelo localhost, para o Nginx se conectar
       - "127.0.0.1:8000:8000"

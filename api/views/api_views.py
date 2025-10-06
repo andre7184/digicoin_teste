@@ -203,7 +203,6 @@ class CampanhaViewSet(viewsets.ModelViewSet):
 class ProdutoViewSet(viewsets.ModelViewSet):
     queryset = Produto.objects.all()
     serializer_class = ProdutoSerializer
-    parser_classes = (MultiPartParser, FormParser)
 
 class DesafioViewSet(viewsets.ModelViewSet):
     queryset = Desafio.objects.all()

@@ -4,12 +4,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('barraBusca-listaDeUsuarios');
   let debounceTimer;
 
+  if (searchInput.value) {
+      searchInput.focus(); 
+      const valLength = searchInput.value.length;
+      searchInput.setSelectionRange(valLength, valLength);
+  }
+  
   searchInput?.addEventListener('input', () => {
     clearTimeout(debounceTimer);
     // Espera 500ms após o usuário parar de digitar para recarregar a página com o filtro
     debounceTimer = setTimeout(() => {
       searchForm.submit();
-    }, 500);
+    }, 100);
   });
 
   // --- Elementos e Eventos dos Popups ---
@@ -70,12 +76,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (response.ok) {
             showPopup(data.message || 'Pontuação zerada com sucesso!', 'Sucesso', 'sucesso');
             zerarDialog.close();
+            setTimeout(() => {
+              location.reload();
+            }, 1500);
         } else {
             showPopup(data.message || 'Erro ao zerar pontuação.', 'Erro', 'erro'); 
         }
     } catch (error) {
         loadingPopup.hidePopup();
         showPopup('Erro ao zerar pontuação: ' + error, 'Erro', 'erro');
+        window.location.reload();
     }
   });
 
@@ -144,6 +154,11 @@ document.addEventListener('DOMContentLoaded', () => {
         showPopup('Digite um valor válido e positivo!', 'Erro', 'erro');
         return;
       }
+      else if (valor > 100000000) {
+        showPopup('Digite um valor menor ou igual a 100 Mil!', 'Erro', 'erro');
+        return;
+      }
+      
       try {
         await Promise.all(usuariosSelecionados.map(usuario => 
           apiRequest(`/api/user/${usuario.id}`, 'PUT', { operacao, saldo: valor }, { 'X-CSRFToken': csrf })

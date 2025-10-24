@@ -107,7 +107,7 @@ jobs:
             echo "EMAIL_HOST=${{ secrets.EMAIL_HOST }}" >> .env
             echo "EMAIL_PORT=${{ secrets.EMAIL_PORT }}" >> .env
             
-            # Limpa o ambiente anterior, MAS PRESERVA OS VOLUMES (seu banco de dados)
+            # #Limpa o ambiente anterior, MAS PRESERVA OS VOLUMES (seu banco de dados)
             echo "Parando contêineres antigos..."
             docker compose down --remove-orphans
 

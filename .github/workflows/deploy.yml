@@ -1,149 +1,212 @@
-name: Deploy Django App
+name: Deploy Aplicativo Django (Digicoin)
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  build_and_deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: 1. Checkout do Código
+      - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.ref }}
 
-      - name: 2. Login no Docker Hub
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: 3. Construir e Enviar Imagem Docker
+      - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
+          file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/digicoin_teste:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DJANGO_PROJECT_REPO_NAME }}:latest # Usa DJANGO_PROJECT_REPO_NAME
 
-      - name: 4. Conectar no Servidor e Fazer Deploy
+      - name: Deploy to Server
         uses: appleboy/ssh-action@master
+        # CORRIGIDO: Bloco 'env' indentado corretamente
+        env:
+           # Passa a senha root do MySQL para o script como variável de ambiente
+           DB_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }} 
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Garante que a pasta do projeto exista no servidor
-            cd /home/deployer/digicoin_project || mkdir -p /home/deployer/digicoin_project && cd /home/deployer/digicoin_project
+            PROJECT_DIR="${{ secrets.DJANGO_PROJECT_DIR }}"
+            PROJECT_NAME="${{ secrets.DJANGO_PROJECT_REPO_NAME }}" # Define variável curta
+            cd $PROJECT_DIR
 
-            # Cria o arquivo mysql.txt no servidor
-            cat << EOF > mysql.txt
-            CREATE DATABASE IF NOT EXISTS \`${{ secrets.DB_NAME }}\`;
-            USE \`${{ secrets.DB_NAME }}\`;
-            SET GLOBAL event_scheduler = ON;
-            DELIMITER \$\$
-            CREATE PROCEDURE desativar_itens_expirados()
-            BEGIN
-                UPDATE api_desafio SET is_active = FALSE WHERE dataFim < CURDATE() AND is_active = TRUE;
-                UPDATE api_produto SET is_active = FALSE WHERE idCampanha_id IN (SELECT id FROM api_campanha WHERE dataFim < CURDATE() AND is_active = TRUE);
-                UPDATE api_desafio SET is_active = FALSE WHERE idCampanha_id IN (SELECT id FROM api_campanha WHERE dataFim < CURDATE() AND is_active = TRUE);
-                UPDATE api_campanha SET is_active = FALSE WHERE dataFim < CURDATE() AND is_active = TRUE;
-            END\$\$
-            DELIMITER ;
-            CREATE EVENT IF NOT EXISTS desativar_campanhas_event
-            ON SCHEDULE EVERY 1 DAY
-            STARTS NOW()
-            DO
-                CALL desativar_itens_expirados();
-            EOF
-
-            # Cria o docker-compose.yml com o caminho para o mysql.txt ajustado
+            # --- Cria o docker-compose.yml (Nomes dinâmicos, usa DB_*) ---
             cat << EOF > docker-compose.yml
             services:
-              db:
+              db: 
                 image: mysql:8.0
-                command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-                container_name: digicoin_mysql
+                container_name: ${PROJECT_NAME}_db 
                 restart: unless-stopped
                 environment:
-                  MYSQL_ROOT_PASSWORD: \${DB_PASSWORD}
-                  MYSQL_DATABASE: \${DB_NAME}
+                  MYSQL_ROOT_PASSWORD: \${DB_ROOT_PASSWORD} # Usa var de ambiente do .env
+                  MYSQL_DATABASE: \${DB_NAME} 
                   MYSQL_USER: \${DB_USER}
                   MYSQL_PASSWORD: \${DB_PASSWORD}
-                volumes:
-                  - mysql_data:/var/lib/mysql
-                  - ./mysql.txt:/docker-entrypoint-initdb.d/init.sql
+                env_file: .env 
+                volumes: 
+                  - mysql_data_${PROJECT_NAME}:/var/lib/mysql 
                 networks:
-                  - digicoin-net
+                  - ${PROJECT_NAME}_net 
+
               web:
-                image: ${{ secrets.DOCKERHUB_USERNAME }}/digicoin_teste:latest
-                container_name: digicoin_web
+                image: ${{ secrets.DOCKERHUB_USERNAME }}/${PROJECT_NAME}:latest
+                container_name: ${PROJECT_NAME}_web 
                 restart: unless-stopped
-                volumes:
-                  - ../data/staticfiles:/app/staticfiles
-                  - ../data/media:/app/media
-                ports:
-                  - "127.0.0.1:8000:8000"
+                command: gunicorn --bind 0.0.0.0:8000 setup.wsgi:application
+                ports: ["127.0.0.1:8000:8000"]
                 env_file: .env
-                depends_on:
-                  - db
+                volumes: ["staticfiles:/app/data/staticfiles", "mediafiles:/app/data/mediafiles"]
+                depends_on: 
+                  - db 
                 networks:
-                  - digicoin-net
+                  - ${PROJECT_NAME}_net 
+
+              adminer:
+                image: adminer
+                container_name: ${PROJECT_NAME}_adminer 
+                restart: unless-stopped
+                ports: ["127.0.0.1:8083:8080"]
+                networks:
+                  - ${PROJECT_NAME}_net 
+
             volumes:
-              mysql_data:
+              mysql_data_${PROJECT_NAME}: 
+              staticfiles: 
+              mediafiles:
+
             networks:
-              digicoin-net:
+              ${PROJECT_NAME}_net: 
             EOF
+
+            # --- Cria o arquivo .env (Usando DB_*, Root Pass e Email) ---
+            echo "SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" > .env
+            echo "DEBUG=False" >> .env
+            echo "ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> .env
+            echo "DATABASE_URL=mysql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@db:3306/${{ secrets.DB_NAME }}" >> .env # Host 'db'
             
-            # Cria o arquivo .env no servidor
-            echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" > .env
-            echo "DJANGO_ALLOWED_HOSTS=${{ secrets.SSH_HOST }},promptweb.com.br" >> .env
+            echo "DB_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env # Usa MYSQL_ROOT_PASSWORD como nome do secret
             echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
             echo "DB_USER=${{ secrets.DB_USER }}" >> .env
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-            echo "DB_HOST=db" >> .env
-            echo "EMAIL_USER=${{ secrets.EMAIL_USER }}" >> .env
-            echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> .env
+
             echo "EMAIL_HOST=${{ secrets.EMAIL_HOST }}" >> .env
             echo "EMAIL_PORT=${{ secrets.EMAIL_PORT }}" >> .env
-            
+            echo "EMAIL_USER=${{ secrets.EMAIL_USER }}" >> .env
+            echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> .env
+
+            # --- Cria a configuração do Nginx (Com Subdomínio, HTTPS, Adminer) ---
+            cat << EOF > nginx.conf
+            server { listen 80; server_name promptweb.com.br www.promptweb.com.br digicoin.promptweb.com.br; return 301 https://\$host\$request_uri; }
+            server {
+                listen 443 ssl http2; server_name promptweb.com.br www.promptweb.com.br digicoin.promptweb.com.br; 
+                ssl_certificate /etc/letsencrypt/live/promptweb.com.br/fullchain.pem; ssl_certificate_key /etc/letsencrypt/live/promptweb.com.br/privkey.pem; 
+                include /etc/letsencrypt/options-ssl-nginx.conf; ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; 
+                location /static/ { alias ${{ secrets.DJANGO_STATIC_PATH }}; } location /media/ { alias ${{ secrets.DJANGO_MEDIA_PATH }}; }
+                location / { proxy_pass http://127.0.0.1:8000; proxy_set_header Host \$host; proxy_set_header X-Real-IP \$remote_addr; proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto https; }
+                location /adminer-mysql/ { proxy_pass http://127.0.0.1:8083/; proxy_set_header Host \$host; proxy_set_header X-Real-IP \$remote_addr; proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto https; }
+            }
+            EOF
+
+            # --- Bloco de Administração do Servidor ---
+            NGINX_CONF_FILE="/etc/nginx/sites-available/promptweb"
+            NGINX_LINK_FILE="/etc/nginx/sites-enabled/promptweb"
+            sudo /usr/bin/mv $PROJECT_DIR/nginx.conf $NGINX_CONF_FILE
+            sudo /usr/bin/ln -sf $NGINX_CONF_FILE $NGINX_LINK_FILE
+            if ! sudo /usr/sbin/nginx -t; then echo "Erro Nginx!"; exit 1; fi
+
+            # --- Executa o Deploy ---
             # #Limpa o ambiente anterior, MAS PRESERVA OS VOLUMES (seu banco de dados)
             echo "Parando contêineres antigos..."
             docker compose down --remove-orphans
 
             # Limpa o ambiente anterior para garantir um início limpo
             #echo "Limpando ambiente anterior (contêineres e volumes)..."
-            #docker compose down -v --remove-orphans
-            
-            # Baixa a versão mais recente da imagem da sua aplicação
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/digicoin_teste:latest
-            
-            # Sobe os serviços em background
-            docker compose up -d
+            #docker compose down -v --remove-orphans 
 
-            # Espera inteligente para o banco de dados ficar pronto
-            echo "Aguardando o banco de dados ficar pronto..."
+            echo "Removendo contêineres nomeados (se existirem)..."
+            docker rm -f ${PROJECT_NAME}_db || true
+            docker rm -f ${PROJECT_NAME}_web || true
+            docker rm -f ${PROJECT_NAME}_adminer || true
+
+            echo "Baixando nova imagem do App..."
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${PROJECT_NAME}:latest
+
+            echo "Iniciando contêiner MySQL (${PROJECT_NAME}_db)..."
+            docker compose up -d db
+
+            # --- ESPERA INTELIGENTE para o MySQL ---
+            echo "Aguardando MySQL (${PROJECT_NAME}_db)..."
             timeout=90
-            while ! docker compose exec db mysqladmin ping -h"127.0.0.1" --silent; do
-              sleep 3
-              timeout=$(expr $timeout - 3)
-              if [ $timeout -le 0 ]; then
-                echo "Erro: Timeout esperando pelo banco de dados."
-                docker compose logs db
-                exit 1
-              fi
+            # Usa a variável de ambiente DB_ROOT_PASSWORD injetada via 'env:'
+            while ! docker compose exec db mysqladmin ping -h localhost -u root -p${DB_ROOT_PASSWORD} --silent; do 
+              sleep 3; timeout=$((timeout - 3));
+              if [ $timeout -le 0 ]; then echo "Timeout MySQL!"; docker compose logs db; exit 1; fi
             done
-            echo "✅ Banco de dados está pronto!"
-            
-            # Executa os comandos de gerenciamento com as configurações de produção
-            echo "Executando migrações..."
-            docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py migrate --noinput
-            
-            echo "Criando admins..."
-            docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py create_admins
-            
+            echo "✅ MySQL pronto!"
+
+            # --- CRIAÇÃO E EXECUÇÃO DO mysql.txt NO SERVIDOR ---
+            echo "Criando script mysql.txt no servidor..."
+            cat << EOF > mysql.txt
+            -- Comandos padrão
+            CREATE DATABASE IF NOT EXISTS \`${{ secrets.DB_NAME }}\`;
+            CREATE USER IF NOT EXISTS '${{ secrets.DB_USER }}'@'%' IDENTIFIED BY '${{ secrets.DB_PASSWORD }}';
+            GRANT ALL PRIVILEGES ON \`${{ secrets.DB_NAME }}\`.* TO '${{ secrets.DB_USER }}'@'%';
+            FLUSH PRIVILEGES;
+
+            -- Seus comandos SQL customizados
+            USE \`${{ secrets.DB_NAME }}\`; 
+            SET GLOBAL event_scheduler = ON;
+            DELIMITER $$
+            CREATE PROCEDURE IF NOT EXISTS desativar_itens_expirados()
+            BEGIN
+              UPDATE api_desafio SET is_active = FALSE WHERE dataFim < CURDATE() AND is_active = TRUE;
+              UPDATE api_produto SET is_active = FALSE WHERE idCampanha_id IN (SELECT id FROM api_campanha WHERE dataFim < CURDATE() AND is_active = TRUE);
+              UPDATE api_desafio SET is_active = FALSE WHERE idCampanha_id IN (SELECT id FROM api_campanha WHERE dataFim < CURDATE() AND is_active = TRUE);
+              UPDATE api_campanha SET is_active = FALSE WHERE dataFim < CURDATE() AND is_active = TRUE;
+            END$$
+            DELIMITER ;
+            DROP EVENT IF EXISTS desativar_campanhas_event; 
+            CREATE EVENT desativar_campanhas_event ON SCHEDULE EVERY 1 DAY STARTS NOW() DO CALL desativar_itens_expirados();
+
+            SELECT 'Script mysql.txt completo executado!' AS status;
+            EOF
+
+            echo "Executando comandos do mysql.txt..."
+            # Executa usando a variável DB_ROOT_PASSWORD
+            docker compose exec -T db mysql --user=root --password=${DB_ROOT_PASSWORD} < mysql.txt 
+            if [ $? -ne 0 ]; then echo "Erro ao executar mysql.txt!"; exit 1; fi
+            echo "✅ Script mysql.txt executado."
+
+            # --- Inicia o restante dos serviços ---
+            echo "Iniciando Web e Adminer..."
+            docker compose up -d web adminer 
+
             echo "Coletando arquivos estáticos..."
-            docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py collectstatic --noinput --clear
+            docker compose exec web python manage.py collectstatic --noinput
             
-            echo "Iniciando o servidor..."            
-            echo "✅ Deploy concluido com sucesso!"
+            echo "Aplicando migrações do Django..."
+            docker compose exec web python manage.py migrate --noinput
+
+            echo "Recarregando Nginx..."
+            sudo /usr/bin/systemctl reload nginx
+
+            echo "✅ Deploy Django concluído!"
+            echo "   App: https://promptweb.com.br , https://digicoin.promptweb.com.br"
+            echo "   Adminer: https://promptweb.com.br/adminer-mysql/"

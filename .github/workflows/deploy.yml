@@ -146,8 +146,8 @@ jobs:
             
             # --- Bloco de Administração do Servidor ---
             # MODIFICADO: Usa DJANGO_PROJECT_DOMAIN (ou promptweb)
-            NGINX_CONF_FILE="/etc/nginx/sites-available/${{ secrets.DJANGO_PROJECT_DOMAIN }}" 
-            NGINX_LINK_FILE="/etc/nginx/sites-enabled/${{ secrets.DJANGO_PROJECT_DOMAIN }}"
+            NGINX_CONF_FILE="/etc/nginx/sites-available/${{ secrets.DJANGO_ALLOWED_HOSTS }}" 
+            NGINX_LINK_FILE="/etc/nginx/sites-enabled/${{ secrets.DJANGO_ALLOWED_HOSTS }}"
 
             echo "Movendo configuração do Nginx..."
             # MODIFICADO: Usa DJANGO_PROJECT_DIR
@@ -187,7 +187,7 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/digicoin_teste:latest
             
             # Sobe os serviços em background
-            docker compose up -d mysql
+            docker compose up -d
 
             # Espera inteligente para o banco de dados ficar pronto
             echo "Aguardando o banco de dados ficar pronto..."
@@ -203,10 +203,6 @@ jobs:
             done
             echo "✅ Banco de dados está pronto!"
             
-            # sobe os outros serviços em background
-            echo "Sobe os serviços web e adminer em background..."
-            docker compose up -d web adminer
-
             # Executa os comandos de gerenciamento com as configurações de produção
             echo "Executando migrações..."
             docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py migrate --noinput

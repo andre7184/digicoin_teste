@@ -168,7 +168,7 @@ jobs:
                 }
                 
                 # Location para Adminer MySQL (Porta 8083)
-                location /adminer-mysql/ { 
+                location /adminer/ { 
                     proxy_pass http://127.0.0.1:8083/; # Roteia para a porta 8083 do Adminer
                     proxy_set_header Host \$host; 
                     proxy_set_header X-Real-IP \$remote_addr; 
@@ -199,7 +199,7 @@ jobs:
 
             # Cria o arquivo .env no servidor
             echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" > .env
-            echo "DJANGO_ALLOWED_HOSTS=${{ secrets.SSH_HOST }},promptweb.com.br" >> .env
+            echo "DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> .env
             echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
             echo "DB_USER=${{ secrets.DB_USER }}" >> .env
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env

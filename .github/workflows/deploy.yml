@@ -129,18 +129,52 @@ jobs:
             
             # --- Cria a configuração do Nginx (PARA PROJETO DJANGO) ---
             cat << EOF > nginx.conf
+            ### Bloco 1/2: Redireciona HTTP (Porta 80) para HTTPS ###
+            server { 
+                listen 80;
+                # Usa DJANGO_ALLOWED_HOSTS para listar os domínios
+                server_name ${{ secrets.DJANGO_ALLOWED_HOSTS }}; 
+                return 301 https://\$host\$request_uri; 
+            }
+            
+            ### Bloco 2/2: Serviço HTTPS Principal (Porta 443) ###
             server {
-                 # MODIFICADO: server_name agora lista todos os hosts do Django
-                 server_name ${{ secrets.DJANGO_ALLOWED_HOSTS }};
+                listen 443 ssl http2; # Escuta na porta 443 com SSL/HTTP2 ativados.
+                # Usa DJANGO_ALLOWED_HOSTS para listar os domínios
+                server_name ${{ secrets.DJANGO_ALLOWED_HOSTS }}; 
 
-                 location / {
-                    # MODIFICADO: proxy_pass para a porta 8000 (Django)
+                # Configurações SSL (Certbot)
+                ssl_certificate /etc/letsencrypt/live/promptweb.com.br/fullchain.pem; 
+                ssl_certificate_key /etc/letsencrypt/live/promptweb.com.br/privkey.pem; 
+                include /etc/letsencrypt/options-ssl-nginx.conf; 
+                ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; 
+
+                # Location para Static Files
+                location /static/ { 
+                    alias ${{ secrets.DJANGO_STATIC_PATH }}; 
+                } 
+                # Location para Media Files
+                location /media/ { 
+                    alias ${{ secrets.DJANGO_MEDIA_PATH }}; 
+                }
+                
+                # Location principal (App Django - Porta 8000)
+                location / { 
                     proxy_pass http://127.0.0.1:8000; 
-                    proxy_set_header Host \$host;
-                    proxy_set_header X-Real-IP \$remote_addr;
-                    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-                    proxy_set_header X-Forwarded-Proto \$scheme;
-                 }
+                    proxy_set_header Host \$host; 
+                    proxy_set_header X-Real-IP \$remote_addr; 
+                    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for; 
+                    proxy_set_header X-Forwarded-Proto https; # IMPORTANTE: Informa ao Django que a conexão é segura
+                }
+                
+                # Location para Adminer MySQL (Porta 8083)
+                location /adminer-mysql/ { 
+                    proxy_pass http://127.0.0.1:8083/; # Roteia para a porta 8083 do Adminer
+                    proxy_set_header Host \$host; 
+                    proxy_set_header X-Real-IP \$remote_addr; 
+                    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for; 
+                    proxy_set_header X-Forwarded-Proto https; 
+                }
             }
             EOF
             

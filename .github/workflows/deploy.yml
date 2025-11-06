@@ -36,22 +36,23 @@ jobs:
             # Garante que a pasta do projeto exista no servidor
             cd /home/deployer/digicoin_project || mkdir -p /home/deployer/digicoin_project && cd /home/deployer/digicoin_project
 
-            # Cria o arquivo mysql.txt no servidor
+            # Cria o arquivo mysql.txt no servidor (SETUP BÁSICO)
             cat << EOF > mysql.txt
             CREATE DATABASE IF NOT EXISTS \`${{ secrets.DB_NAME }}\`;
             USE \`${{ secrets.DB_NAME }}\`;
             SET GLOBAL event_scheduler = ON;
+            EOF
 
+            # Cria o arquivo SQL com a Stored Procedure e o Evento (A SER EXECUTADO DEPOIS DAS MIGRAÇÕES)
+            cat << EOF > events_setup.sql
             DELIMITER $$
 
             CREATE PROCEDURE desativar_itens_expirados()
             BEGIN
-                -- 1. Desativa DESAFIOS cuja dataFim já passou e que ainda estão ativos.
                 UPDATE api_desafio
                 SET is_active = FALSE
                 WHERE dataFim < CURDATE() AND is_active = TRUE;
 
-                -- 2. Desativa PRODUTOS e DESAFIOS relacionados a campanhas expiradas.
                 UPDATE api_produto
                 SET is_active = FALSE
                 WHERE idCampanha_id IN (
@@ -66,7 +67,6 @@ jobs:
                     WHERE dataFim < CURDATE() AND is_active = TRUE
                 );
 
-                -- 3. Desativa as próprias CAMPANHAS expiradas.
                 UPDATE api_campanha
                 SET is_active = FALSE
                 WHERE dataFim < CURDATE() AND is_active = TRUE;
@@ -74,7 +74,7 @@ jobs:
 
             DELIMITER ;
 
-            CREATE EVENT desativar_campanhas_event
+            CREATE EVENT IF NOT EXISTS desativar_campanhas_event
             ON SCHEDULE EVERY 1 DAY
             STARTS NOW()
             DO
@@ -211,12 +211,12 @@ jobs:
             echo "EMAIL_PORT=${{ secrets.EMAIL_PORT }}" >> .env
             
             # #Limpa o ambiente anterior, MAS PRESERVA OS VOLUMES (seu banco de dados)
-            #echo "Parando contêineres antigos..."
-            #docker compose down --remove-orphans
+            echo "Parando contêineres antigos..."
+            docker compose down --remove-orphans
 
             # Limpa o ambiente anterior para garantir um início limpo
-            echo "Limpando ambiente anterior (contêineres e volumes)..."
-            docker compose down -v --remove-orphans
+            #echo "Limpando ambiente anterior (contêineres e volumes)..."
+            #docker compose down -v --remove-orphans
             
             # Baixa a versão mais recente da imagem da sua aplicação
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/digicoin_teste:latest
@@ -242,6 +242,13 @@ jobs:
             echo "Executando migrações..."
             docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py migrate --noinput
             
+            # NOVO PASSO: Executa a criação da Stored Procedure e do Evento
+            echo "Criando Stored Procedure e Evento Agendado..."
+            docker compose exec db mysql -u${{ secrets.DB_USER }} -p${{ secrets.DB_PASSWORD }} ${{ secrets.DB_NAME }} < events_setup.sql
+            
+            # Limpa o arquivo temporário
+            rm events_setup.sql
+
             echo "Criando admins..."
             docker compose exec -e DJANGO_SETTINGS_MODULE='Digicoin.settings.production' web python manage.py create_admins
             

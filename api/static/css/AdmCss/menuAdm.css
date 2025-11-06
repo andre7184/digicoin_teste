@@ -17,6 +17,7 @@ hr {
     align-items: center;
     gap: 30px;
     padding-top: 20px;
+    overflow-y: auto;
 }
 
 .arrowLeftDiv-menuAdm {
@@ -70,6 +71,7 @@ hr {
 .sair-menuAdm {
     margin-top: 50px;
     text-decoration: none;
+    padding-bottom: 25px;
 }
 
 .buttonSair-menuAdm {
